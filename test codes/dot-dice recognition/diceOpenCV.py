@@ -1,6 +1,7 @@
 # Import libraries (OpenCV, Die object)
 import cv2
 from die import Die
+from pprint import pprint
 
 # Set up an array for the Die objects
 dice = []
@@ -35,6 +36,8 @@ for c in contoursDots:
     approx = cv2.approxPolyDP(c, 0.01*cv2.arcLength(c, True), True)
     if len(approx) > 10:
         cv2.drawContours(img, [approx], 0, (255, 0, 0), 5)
+        x = approx.ravel()[0]
+        y = approx.ravel()[1]
 
         for d in dice:
             if (x > d.xb and x < d.xe and y > d.yb and y < d.ye):
