@@ -1,54 +1,121 @@
 # Import libraries (OpenCV, Die object)
 import cv2
+import numpy as np
 from die import Die
-from pprint import pprint
 
 # Set up an array for the Die objects
 dice = []
 
 # Load the image and process it for the CV to have it easier to analyse
 img = cv2.imread('dice.png')
-cv2.medianBlur(img, 5, img)
-imgGrey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+video = cv2.VideoCapture("vid.mp4")
 
-# Set the threshold to the image, change it to binary (either black or white); find the contours
-temp, thresholdDice = cv2.threshold(imgGrey, 250, 255, cv2.THRESH_BINARY)
-contoursDice, temp = cv2.findContours(thresholdDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+# Trackbar windows to figure out the thresholds and stuff 
+#region
+def nothing(x):
+    pass
 
-# For every contour: make an approximate shape, if the shape has more than 4 points,
-# consider it as a cube - draw an outline, set the coords and make an instance of the Die object
-for c in contoursDice:
-    approx = cv2.approxPolyDP(c, 0.01*cv2.arcLength(c, True), True)
-    if len(approx) > 4:
-        cv2.drawContours(img, [approx], 0, (0, 0, 0), 5)
-        x, y, w, h = cv2.boundingRect(approx)
-        x2, y2 = x+w, y+h
-        dice.append(Die(x, y, x2, y2, 0))
+cv2.namedWindow("Trackbars")
+cv2.resizeWindow("Trackbars", 500, 500)
+cv2.createTrackbar("L-H", "Trackbars", 0, 180, nothing)
+cv2.createTrackbar("L-S", "Trackbars", 0, 255, nothing)
+cv2.createTrackbar("L-V", "Trackbars", 180, 255, nothing)
+cv2.createTrackbar("U-H", "Trackbars", 40, 180, nothing)
+cv2.createTrackbar("U-S", "Trackbars", 60, 255, nothing)
+cv2.createTrackbar("U-V", "Trackbars", 255, 255, nothing)
+cv2.createTrackbar("Epsilon", "Trackbars", 50, 500, nothing)
+cv2.createTrackbar("Erode", "Trackbars", 1, 100, nothing)
+cv2.createTrackbar("Thiccness", "Trackbars", 4, 10, nothing)
+cv2.createTrackbar("Contours", "Trackbars", 4, 100, nothing)
+#endregion
 
-# Set the new threshold, now focusing on the dots; find the contours
-temp, thresholdDots = cv2.threshold(imgGrey, 135, 155, cv2.THRESH_BINARY)
-contoursDots, temp = cv2.findContours(thresholdDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+# Output
+while True:
+    # Read the video and convert the value system to Hue-Sat-Val
+    _trash, frame = video.read()
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    
+    #region
+    # Apply thresholds from the Trackbars
+    lower_threshold = np.array(
+        [cv2.getTrackbarPos("L-H", "Trackbars"),
+         cv2.getTrackbarPos("L-S", "Trackbars"),
+         cv2.getTrackbarPos("L-V", "Trackbars")])
+    upper_threshold = np.array(
+        [cv2.getTrackbarPos("U-H", "Trackbars"),
+         cv2.getTrackbarPos("U-S", "Trackbars"),
+         cv2.getTrackbarPos("U-V", "Trackbars")])
 
-# For every dot, find the approximate, if the shape has more than 10 points, draw an outline,
-# go through all the dice and check the coords to see within which one the dot lies,
-# add the dot into the Die object
-for c in contoursDots:
-    approx = cv2.approxPolyDP(c, 0.01*cv2.arcLength(c, True), True)
-    if len(approx) > 10:
-        cv2.drawContours(img, [approx], 0, (255, 0, 0), 5)
-        x = approx.ravel()[0]
-        y = approx.ravel()[1]
+    maskDice = cv2.inRange(hsv, lower_threshold, upper_threshold)
+    kernelSizeDice = cv2.getTrackbarPos("Erode", "Trackbars")
+    kernelDice = np.ones((kernelSizeDice, kernelSizeDice), np.uint8)
+    maskDice = cv2.erode(maskDice, kernelDice)
 
-        for d in dice:
-            if (x > d.xb and x < d.xe and y > d.yb and y < d.ye):
-                d.dots += 1
+    # Alternative image processing with dots
+    maskDots = maskDice
+    maskDots = cv2.blur(maskDots, (9, 9))
+    _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY_INV)
+    kernelSizeDots = cv2.getTrackbarPos("Erode", "Trackbars")
+    kernelDots = np.ones((kernelSizeDots, kernelSizeDots), np.uint8)
+    maskDots = cv2.erode(maskDots, kernelDots)
+    #endregion
 
-# Parse the dot amount into a string and draw it into the die
-for d in dice:
-    dotsInString = str(d.dots)
-    cv2.putText(img, dotsInString, (d.xb+20, d.yb+20), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
+    # Find contours and draw them
+    # Dice
+    #region
+    contours, _ = cv2.findContours(maskDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
+    dice = []
+    for c in contours:
+        approx = cv2.approxPolyDP(c, cv2.getTrackbarPos("Epsilon", "Trackbars"), True)
+        if len(approx) == cv2.getTrackbarPos("Contours", "Trackbars"):
+            x, y, w, h = cv2.boundingRect(approx)
+            x2 = x + w
+            y2 = y + h
+            if (0.80 < w/h < 1.20):
+                color = (0, 200, 0)
+                dice.append(Die(x, y, x2, y2, 0))
+            else:
+                color = (200, 0, 0)
+            cv2.drawContours(frame, [approx], 0, color, cv2.getTrackbarPos("Thiccness", "Trackbars"))
+            cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+    #endregion
+    # Dots
+    #region
+    contours, _ = cv2.findContours(
+        maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-# Draw the processed image
-cv2.imshow("shapes", img)
-cv2.waitKey(0)
+    for c in contours:
+        approx = cv2.approxPolyDP(c, 1, False)
+        if len(approx) >= cv2.getTrackbarPos("Contours", "Trackbars"):
+            x, y, w, h = cv2.boundingRect(approx)
+            x2 = x + w
+            y2 = y + h
+            for d in dice:
+                if (x > d.x and x2 < d.x2 and y > d.y and y2 < d.y2):
+                    d.dots += 1
+                    cv2.drawContours(frame, [approx], 0, (0, 200, 200), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+                    cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+                        
+    #endregion
+
+    dicePoints = ', '.join([str(d.dots) for d in dice])
+    cv2.putText(frame, dicePoints, (50, 100), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 255, 255), 3)
+    
+    # Draw the frames
+    cv2.namedWindow("Original", 0)
+    cv2.resizeWindow("Original", 640, 360)
+    cv2.imshow("Original", frame)
+    cv2.namedWindow("Processed-dice", 0)
+    cv2.resizeWindow("Processed-dice", 640, 360)
+    cv2.imshow("Processed-dice", maskDice)
+    cv2.namedWindow("Processed-dots", 0)
+    cv2.resizeWindow("Processed-dots", 640, 360)
+    cv2.imshow("Processed-dots", maskDots)
+    
+    key = cv2.waitKey(1)
+    if key == 27:
+        break
+
+video.release()
 cv2.destroyAllWindows()
