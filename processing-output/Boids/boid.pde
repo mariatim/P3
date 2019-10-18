@@ -42,7 +42,7 @@ class Boid {
     }
   }
 
-  PVector align(Boid[] boids) {
+  PVector align(ArrayList<Boid> boids) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
@@ -62,7 +62,7 @@ class Boid {
     return steering;
   }
 
-  PVector separation(Boid[] boids) {
+  PVector separation(ArrayList<Boid> boids) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
@@ -84,7 +84,7 @@ class Boid {
     return steering;
   }
 
-  PVector cohesion(Boid[] boids) {
+  PVector cohesion(ArrayList<Boid> boids) {
     int perceptionRadius = 100;
     PVector steering = new PVector();
     int total = 0;
@@ -105,7 +105,7 @@ class Boid {
     return steering;
   }
 
-  void flock(Boid[] boids) {
+  void flock(ArrayList<Boid> boids) {
     PVector alignment = this.align(boids);
     PVector cohesion = this.cohesion(boids);
     PVector separation = this.separation(boids);
@@ -131,8 +131,11 @@ class Boid {
   }
 
   void show() {
+    //float avgVel = (this.velocity.x+this.velocity.y)/2;
+    //avgVel = constrain(avgVel,-10,10);
     strokeWeight(8);
     stroke(r, g, b, 220);
+    //println(alpha);
     point(this.position.x, this.position.y);
     
     noFill();
@@ -140,9 +143,19 @@ class Boid {
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
       strokeWeight(2);
-      //point(pos.x,pos.y);*/
+      //point(pos.x,pos.y);
       vertex(pos.x,pos.y);
     }
     endShape();
+  }
+  
+  void changeColor(){
+    this.r = random(0,255);
+    this.g = random(0,255);
+    this.b = random(0,255);
+  }
+  
+  void changeSpeed(int speed){
+    this.maxSpeed = speed;
   }
 }

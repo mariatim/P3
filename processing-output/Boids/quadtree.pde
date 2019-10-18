@@ -1,6 +1,6 @@
 class QuadTree {
   Rectangle boundary;
-  ArrayList<Boid> particles;
+  ArrayList<Boid> boids;
   int capacity;
   Boolean isDivided;
 
@@ -9,7 +9,7 @@ class QuadTree {
   QuadTree(Rectangle boundary, int n) {
     this.boundary = new Rectangle(boundary);
     this.capacity = n;
-    this.particles = new ArrayList<Boid>();
+    this.boids = new ArrayList<Boid>();
     this.isDivided = false;
   }
 
@@ -35,8 +35,8 @@ class QuadTree {
       return false;
     }
 
-    if (particles.size() < this.capacity) {
-      particles.add(point);
+    if (boids.size() < this.capacity) {
+      boids.add(point);
       return true;
     } else {
       if (!isDivided) {
@@ -61,7 +61,7 @@ class QuadTree {
       found = new ArrayList<Boid>();
     }
     if (this.boundary.intersects(range)) {
-      for (Boid p : particles) {
+      for (Boid p : boids) {
         if (range.contains(p)) {
           found.add(p);
         }
@@ -74,11 +74,6 @@ class QuadTree {
       }
     }
     return found;
-  }
-  
-  void empty(){
-    this.isDivided = false;
-    this.particles = new ArrayList<Boid>();
   }
   
   //display the boundaries of rectangels and its children rectangles
