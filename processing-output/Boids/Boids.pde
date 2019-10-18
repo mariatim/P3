@@ -55,28 +55,43 @@ void keyPressed() {
     }
   }
 
-  if (key == 'q' || key == 'w' || key == 'e' || key == 'r' || key == 't' || key == 'z') {
+  if (key == 'q' || key == 'w' || key == 'e' || key == 'r' || key == 't' || key == 'y') {
     
     if (key == 'q') {
       changeFlockSize(200);
+    for (Boid boid : flock) {
+      boid.changeSpeed();
+    }
     }
     if (key == 'w') {
       changeFlockSize(300);
+    for (Boid boid : flock) {
+      boid.changeSpeed();
+    }
     }
     if (key == 'e') {
       changeFlockSize(400);
+    for (Boid boid : flock) {
+      boid.changeSpeed();
+    }
     }
     if (key == 'r') {
       changeFlockSize(600);
+    for (Boid boid : flock) {
+      boid.changeSpeed();
+    }
     }
     if (key == 't') {
       changeFlockSize(800);
-    }
-    if (key == 'z') {
-      changeFlockSize(1000);
-    }
     for (Boid boid : flock) {
       boid.changeSpeed();
+    }
+    }
+    if (key == 'y') {
+      changeFlockSize(1000);
+    for (Boid boid : flock) {
+      boid.changeSpeed();
+    }
     }
   }
 
@@ -135,11 +150,13 @@ void changeFlockSize(int x) {
   int missingSize = x - flock.size();
   
   println(missingSize);
+  
   if (missingSize > 0) {
     for (int i =0; i< missingSize; i++) {
       flock.add(new Boid());
     }
   }
+  
   if (missingSize < 0) {
     println(abs(missingSize));
     for (int i =0; i< abs(missingSize); i++) {
