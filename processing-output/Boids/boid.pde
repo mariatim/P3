@@ -4,8 +4,8 @@ class Boid {
   PVector acceleration;
   int maxForce;
   int maxSpeed;
-  float r;
-  float g;
+  float h;
+  float s;
   float b;
   ArrayList<PVector> history;
   int trailSize;
@@ -17,10 +17,10 @@ class Boid {
     this.velocity.setMag(random(2, 4));
     this.acceleration = new PVector();
     this.maxForce = 1;
-    this.maxSpeed = 5;
-    r = random(0, 50);
-    g = random(120, 160);
-    b = random(150, 220);
+    this.maxSpeed = 10;
+    h = random(0, 120);
+    s = 100;
+    b = 100;
     trailSize = 5;
     history = new ArrayList<PVector>();
   }
@@ -134,28 +134,72 @@ class Boid {
     //float avgVel = (this.velocity.x+this.velocity.y)/2;
     //avgVel = constrain(avgVel,-10,10);
     strokeWeight(8);
-    stroke(r, g, b, 220);
+    stroke(h, s, b);
     //println(alpha);
     point(this.position.x, this.position.y);
-    
-    noFill();
+
+    //noFill();
+    fill(h, s, b);
     beginShape();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
       strokeWeight(2);
       //point(pos.x,pos.y);
-      vertex(pos.x,pos.y);
+      vertex(pos.x, pos.y);
     }
     endShape();
   }
-  
-  void changeColor(){
-    this.r = random(0,255);
-    this.g = random(0,255);
-    this.b = random(0,255);
+
+  void changeColor() {
+    if (key == '1') {
+      this.h= random(0, 60);
+      println("1");
+    }
+
+    if (key == '2') {
+      this.h= random(60, 120);
+      println("2");
+    }
+
+    if (key == '3') {
+      this.h= random(120, 180);
+      println("3");
+    }
+
+    if (key == '4') {
+      this.h= random(180, 240);
+      println("4");
+    }
+
+    if (key == '5') {
+      this.h= random(240, 320);
+      println("5");
+    }
+
+    if (key == '6') {
+      this.h = random(320, 360);
+      println("6");
+    }
   }
-  
-  void changeSpeed(int speed){
-    this.maxSpeed = speed;
+
+  void changeSpeed() {
+    if (key == 'q') {
+      this.maxSpeed = 10;
+      }
+      if (key == 'w') {
+        this.maxSpeed = 8;
+      }
+      if (key == 'e') {
+        this.maxSpeed = 6;
+      }
+      if (key == 'r') {
+        this.maxSpeed = 4;
+      }
+      if (key == 't') {
+        this.maxSpeed = 3;
+      }
+      if (key == 'z') {
+        this.maxSpeed = 2;
+      }
+    }
   }
-}
