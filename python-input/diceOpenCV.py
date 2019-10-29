@@ -7,7 +7,6 @@ from die import Die
 dice = []
 
 # Load the image and process it for the CV to have it easier to analyse
-img = cv2.imread('dice.png')
 video = cv2.VideoCapture("vid.mp4")
 
 # Trackbar windows to figure out the thresholds and stuff 
@@ -24,9 +23,10 @@ cv2.createTrackbar("U-H", "Trackbars", 40, 180, nothing)
 cv2.createTrackbar("U-S", "Trackbars", 60, 255, nothing)
 cv2.createTrackbar("U-V", "Trackbars", 255, 255, nothing)
 cv2.createTrackbar("Epsilon", "Trackbars", 50, 500, nothing)
-cv2.createTrackbar("Erode", "Trackbars", 1, 100, nothing)
+cv2.createTrackbar("Dilate", "Trackbars", 1, 50, nothing)
+cv2.createTrackbar("Erode", "Trackbars", 1, 50, nothing)
 cv2.createTrackbar("Thiccness", "Trackbars", 4, 10, nothing)
-cv2.createTrackbar("Contours", "Trackbars", 4, 100, nothing)
+cv2.createTrackbar("Contours", "Trackbars", 4, 10, nothing)
 #endregion
 
 # Output
@@ -47,16 +47,18 @@ while True:
          cv2.getTrackbarPos("U-V", "Trackbars")])
 
     maskDice = cv2.inRange(hsv, lower_threshold, upper_threshold)
-    kernelSizeDice = cv2.getTrackbarPos("Erode", "Trackbars")
-    kernelDice = np.ones((kernelSizeDice, kernelSizeDice), np.uint8)
-    maskDice = cv2.erode(maskDice, kernelDice)
+    maskDots = maskDice
+    kernelSizeErodeDice = cv2.getTrackbarPos("Erode", "Trackbars")
+    kernelSizeDilateDice = cv2.getTrackbarPos("Dilate", "Trackbars")
+    maskDice = cv2.dilate(maskDice, np.ones((kernelSizeDilateDice, kernelSizeDilateDice), np.uint8))
+    maskDice = cv2.erode(maskDice, np.ones((kernelSizeErodeDice, kernelSizeErodeDice), np.uint8))
 
     # Alternative image processing with dots
-    maskDots = maskDice
+    # maskDots = maskDice
     maskDots = cv2.blur(maskDots, (9, 9))
-    _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY_INV)
-    kernelSizeDots = cv2.getTrackbarPos("Erode", "Trackbars")
-    kernelDots = np.ones((kernelSizeDots, kernelSizeDots), np.uint8)
+    _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
+    # kernelSizeDots = cv2.getTrackbarPos("Erode", "Trackbars")
+    kernelDots = np.ones((1, 1), np.uint8)
     maskDots = cv2.erode(maskDots, kernelDots)
     #endregion
 
@@ -69,21 +71,21 @@ while True:
     for c in contours:
         approx = cv2.approxPolyDP(c, cv2.getTrackbarPos("Epsilon", "Trackbars"), True)
         if len(approx) == cv2.getTrackbarPos("Contours", "Trackbars"):
-            x, y, w, h = cv2.boundingRect(approx)
-            x2 = x + w
-            y2 = y + h
-            if (0.80 < w/h < 1.20):
+            coords = [a[0] for a in approx]
+            d = Die(coords, 0)
+            if (d.isSquare()):
                 color = (0, 200, 0)
-                dice.append(Die(x, y, x2, y2, 0))
+                dice.append(Die(coords, 0))
             else:
                 color = (200, 0, 0)
             cv2.drawContours(frame, [approx], 0, color, cv2.getTrackbarPos("Thiccness", "Trackbars"))
             cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+            cv2.circle(frame, tuple(d.roundedCenter), int(d.minCenterDistance), (0, 0, 255), 3)
+            cv2.circle(frame, tuple(d.roundedCenter), int(d.maxCenterDistance), (255, 255, 255), 3)
     #endregion
     # Dots
     #region
-    contours, _ = cv2.findContours(
-        maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)    
 
     for c in contours:
         approx = cv2.approxPolyDP(c, 1, False)
@@ -92,7 +94,7 @@ while True:
             x2 = x + w
             y2 = y + h
             for d in dice:
-                if (x > d.x and x2 < d.x2 and y > d.y and y2 < d.y2):
+                if (d.isBelongs([x, x2],[y, y2])):
                     d.dots += 1
                     cv2.drawContours(frame, [approx], 0, (0, 200, 200), cv2.getTrackbarPos("Thiccness", "Trackbars"))
                     cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
@@ -103,9 +105,9 @@ while True:
     cv2.putText(frame, dicePoints, (50, 100), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 255, 255), 3)
     
     # Draw the frames
-    cv2.namedWindow("Original", 0)
-    cv2.resizeWindow("Original", 640, 360)
-    cv2.imshow("Original", frame)
+    cv2.namedWindow("Analysed", 0)
+    cv2.resizeWindow("Analysed", 640, 360)
+    cv2.imshow("Analysed", frame)
     cv2.namedWindow("Processed-dice", 0)
     cv2.resizeWindow("Processed-dice", 640, 360)
     cv2.imshow("Processed-dice", maskDice)
