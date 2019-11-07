@@ -54,8 +54,8 @@ class QuadTree {
     }
     return false;
   }
-  
-  
+
+
   ArrayList<Boid> query(Rectangle range, ArrayList<Boid> found) {
     if (found == null) {
       found = new ArrayList<Boid>();
@@ -75,7 +75,7 @@ class QuadTree {
     }
     return found;
   }
-  
+
   //display the boundaries of rectangels and its children rectangles
   void show() {
     stroke(255);

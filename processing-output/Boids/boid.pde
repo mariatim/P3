@@ -118,6 +118,10 @@ class Boid {
     this.acceleration.add(cohesion);
     this.acceleration.add(separation);
   }
+  
+  void avoidPlastic(){
+    
+  }
 
   void update() {
     this.position.add(this.velocity);
@@ -143,7 +147,7 @@ class Boid {
     beginShape();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
-      strokeWeight(2);
+      strokeWeight(1/(i+0.1));
       //point(pos.x,pos.y);
       vertex(pos.x, pos.y);
     }
