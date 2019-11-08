@@ -1,52 +1,61 @@
-class Boid {
+class Whale {
   PVector position;
   PVector velocity;
   PVector acceleration;
   int maxForce;
   int maxSpeed;
-  float r;
-  float g;
-  float b;
+
   ArrayList<PVector> history;
   int trailSize;
-  int lifespan;
 
-  Boid() {
+  float alignValue = .8;
+  float cohesionValue = .2;
+  float seperationValue = .4;
+
+  Whale() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
-    this.velocity.setMag(random(2, 4));
+    this.velocity.setMag(random(1, 2));
     this.acceleration = new PVector();
     this.maxForce = 1;
-    this.maxSpeed = 5;
-    r = random(0, 50);
-    g = random(120, 160);
-    b = random(150, 220);
-    trailSize = 5;
+    this.maxSpeed = 2;
     history = new ArrayList<PVector>();
+    trailSize = 30;
   }
 
   void edges() {
-    if (this.position.x > width) {
-      this.position.x = 0;
-      history.clear();
-    } else if (this.position.x < 0) {
-      this.position.x = width;
-      history.clear();
+    int perceptionRadius = 35;
+    PVector steering = new PVector();
+
+    if (this.position.x < perceptionRadius) {
+      PVector desired = new PVector(maxSpeed, this.velocity.y);
+      steering = PVector.sub(desired, this.velocity);
+      steering.limit(maxForce);
+      this.applyForce(steering);
+    } else if (this.position.x > width - perceptionRadius) {
+      PVector desired = new PVector(-maxSpeed, this.velocity.y);
+      steering = PVector.sub(desired, this.velocity);
+      steering.limit(maxForce);
+      this.applyForce(steering);
     }
-    if (this.position.y > height) {
-      this.position.y = 0;
-      history.clear();
-    } else if (this.position.y < 0) {
-      this.position.y = height;
-      history.clear();
+    if (this.position.y < perceptionRadius) {
+      PVector desired = new PVector(maxSpeed, this.velocity.x);
+      steering = PVector.sub(desired, this.velocity);
+      steering.limit(maxForce);
+      this.applyForce(steering);
+    } else if (this.position.y > height - perceptionRadius) {
+      PVector desired = new PVector(-maxSpeed, this.velocity.x);
+      steering = PVector.sub(desired, this.velocity);
+      steering.limit(maxForce);
+      this.applyForce(steering);
     }
   }
 
-  PVector align(ArrayList<Boid> boids) {
+  PVector align(ArrayList<Whale> boids) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
-    for (Boid other : boids) {
+    for (Whale other : boids) {
       float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
       if (other != this && d < perceptionRadius) {
         steering.add(other.velocity);
@@ -62,11 +71,11 @@ class Boid {
     return steering;
   }
 
-  PVector separation(ArrayList<Boid> boids) {
+  PVector separation(ArrayList<Whale> boids) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
-    for (Boid other : boids) {
+    for (Whale other : boids) {
       float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
       if (other != this && d < perceptionRadius) {
         PVector diff = PVector.sub(this.position, other.position);
@@ -84,11 +93,11 @@ class Boid {
     return steering;
   }
 
-  PVector cohesion(ArrayList<Boid> boids) {
+  PVector cohesion(ArrayList<Whale> boids) {
     int perceptionRadius = 100;
     PVector steering = new PVector();
     int total = 0;
-    for (Boid other : boids) {
+    for (Whale other : boids) {
       float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
       if (other != this && d < perceptionRadius) {
         steering.add(other.position);
@@ -105,18 +114,23 @@ class Boid {
     return steering;
   }
 
-  void flock(ArrayList<Boid> boids) {
+  void flock(ArrayList<Whale> boids) {
     PVector alignment = this.align(boids);
     PVector cohesion = this.cohesion(boids);
     PVector separation = this.separation(boids);
+    //PVector avoidEdge = this.edges();
 
     alignment.mult(alignValue);
     cohesion.mult(cohesionValue);
     separation.mult(seperationValue);
 
-    this.acceleration.add(alignment);
-    this.acceleration.add(cohesion);
-    this.acceleration.add(separation);
+    this.applyForce(alignment);
+    this.applyForce(cohesion);
+    this.applyForce(separation);
+  }
+
+  void applyForce(PVector force) {
+    this.acceleration.add(force);
   }
 
   void update() {
@@ -131,31 +145,17 @@ class Boid {
   }
 
   void show() {
-    //float avgVel = (this.velocity.x+this.velocity.y)/2;
-    //avgVel = constrain(avgVel,-10,10);
-    strokeWeight(8);
-    stroke(r, g, b, 220);
-    //println(alpha);
-    point(this.position.x, this.position.y);
-    
-    noFill();
+    noStroke();
+    fill(40);
+    ellipse(this.position.x, this.position.y, 50, 50);
     beginShape();
+    //noFill();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
-      strokeWeight(2);
-      //point(pos.x,pos.y);
-      vertex(pos.x,pos.y);
+      float r = map(i, 0, history.size(), 10, 40);
+      ellipse(pos.x, pos.y, r, r);
+      //vertex(pos.x, pos.y);
     }
     endShape();
-  }
-  
-  void changeColor(){
-    this.r = random(0,255);
-    this.g = random(0,255);
-    this.b = random(0,255);
-  }
-  
-  void changeSpeed(int speed){
-    this.maxSpeed = speed;
   }
 }
