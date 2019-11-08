@@ -1,11 +1,16 @@
+import processing.net.*; 
+Client myClient;
+
+byte[] input;
+
 ArrayList<Mackerel> m;
-int mackerelFlockSize = 400;
+int mackerelFlockSize = 500;
 
 ArrayList<Plankton> p;
-int planktonFlockSize = 600;
+int planktonFlockSize = 700;
 
 ArrayList<Tuna> t;
-int tunaFlockSize = 50;
+int tunaFlockSize = 60;
 
 ArrayList<Whale> w;
 int whaleFlockSize = 9;
@@ -13,6 +18,8 @@ int whaleFlockSize = 9;
 void setup() {
   //size(1280, 640);
   fullScreen();
+  
+  myClient = new Client(this, "127.0.0.1", 5001);
 
   m = new ArrayList<Mackerel>();
   for (int i = 0; i < mackerelFlockSize; i++) {
@@ -35,9 +42,17 @@ void setup() {
   }
 }
 
-
 void draw() {
   background(0, 0, 30);
+  
+  if (myClient.available() > 0) {
+    input = myClient.readBytes();
+    println(input);
+    println("received");
+    /*for (int i = 0; i <= input.length; i++) {
+      println(int(input[i]));
+    }*/
+  }
 
   for (Plankton pl : p) {
     pl.edges();
@@ -59,11 +74,11 @@ void draw() {
     tu.show();
   }
 
-  for (Whale wh : w) {
-    wh.edges();
-    wh.update();
-    wh.flock(w);
-    wh.show();
-  }
-  println(frameRate);
+  //for (Whale wh : w) {
+  //  wh.edges();
+  //  wh.update();
+  //  wh.flock(w);
+  //  wh.show();
+  //}
+  //println(frameRate);
 }

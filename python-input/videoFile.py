@@ -2,6 +2,16 @@
 import cv2
 import numpy as np
 from die import Die
+import socket
+
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 5001              # Arbitrary non-privileged port
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+
+s.listen(1)
+conn, addr = s.accept()
 
 # Set up an array for the Die objects
 dice = []
@@ -103,7 +113,23 @@ while True:
 
     dicePoints = ', '.join([str(d.dots) for d in dice])
     cv2.putText(frame, dicePoints, (50, 100), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 255, 255), 3)
-    
+
+    if(dice != None):
+        diceValues = [1, 1, 1, 1, 1, 1]
+        realValues = []
+        for d in dice:
+            realValues.append(d.dots)
+
+        #diceValues = np.where(array1 == 0, 1, array1)
+        for i in range(len(realValues)):
+            diceValues[i] = realValues[i]
+
+        if(len(diceValues) > 0):
+            print(diceValues)
+
+            conn.sendall(bytes(diceValues))
+            #conn.close()
+
     # Draw the frames
     cv2.namedWindow("Analysed", 0)
     cv2.resizeWindow("Analysed", 640, 360)
@@ -121,3 +147,4 @@ while True:
 
 video.release()
 cv2.destroyAllWindows()
+conn.close()
