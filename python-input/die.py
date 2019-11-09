@@ -1,7 +1,11 @@
 from scipy.spatial import distance as dist
 
 class Die:
-    def __init__(self, _coords, _dots, _color=None):
+    def __init__(self, _dots, _color="none"):
+        self.dots = _dots
+        self.color = _color
+
+    def __init__(self, _coords, _dots=0, _color=None):
         self.coords = _coords
         self.dots = _dots
         self.color = _color

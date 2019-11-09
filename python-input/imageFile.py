@@ -22,7 +22,11 @@ hues = {0: ((0, 40, 0, 60, 180, 255), 25, 50, 10),
         7: (PSDtoCV(12, 93, 74, 5, 30, 10), 0, 0)}
 
 huesND = (((160, 175, 120, 250, 160, 255), 25, 1, 1, "pink"),
-          ((50, 65, 200, 255, 0, 170), 15, 12, 1, "green"))
+          ((50, 65, 200, 255, 0, 170), 15, 12, 1, "green"),
+          ((120, 150, 50, 145, 60, 255), 10, 4, 2, "purple"),
+          ((0, 3, 170, 230, 95, 190), 10, 1, 1, "red"),
+          ((100, 110, 140, 255, 45, 130), 15, 1, 1, "blue"),
+          ((0, 120, 0, 65, 0, 50), 20, 1, 1, "black"))
 precisionTrackbars = False
 
 # Set up an array for the Die objects
@@ -122,16 +126,17 @@ while True:
                 x, y, w, h = cv2.boundingRect(approx)
                 x2 = x + w
                 y2 = y + h
-                for d in dice:
-                    if (d.isBelongs([x, x2],[y, y2])):
-                        d.dots += 1
-                        cv2.drawContours(frame, [approx], 0, (0, 200, 200), cv2.getTrackbarPos("Thiccness", "Trackbars"))
-                        cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+                d = dice[-1]
+                if (d.isBelongs([x, x2],[y, y2])):
+                    d.dots += 1
+                    cv2.drawContours(frame, [approx], 0, (0, 200, 200), cv2.getTrackbarPos("Thiccness", "Trackbars"))
+                    cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos("Thiccness", "Trackbars"))
                             
         #endregion
 
-        dicePoints = ', '.join([str(d.dots) for d in dice])
-        cv2.putText(frame, dicePoints, (50, 100), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 255, 255), 3)
+        for i in range(len(dice)):
+            text = str(dice[i].color) + " = " + str(dice[i].dots)
+            cv2.putText(frame, text, (30, (i+1)*30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 1)
 
         # Draw the frames
         cv2.imshow("Analysed", frame)
