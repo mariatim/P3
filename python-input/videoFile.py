@@ -120,9 +120,9 @@ while True:
                         cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos(
                             "Thiccness", "Trackbars"))
 
-        if len(dice) > 6:
-            for i in range(len(dice), 7):
-                dice.append(Die(0))
+        if len(dice) < 6:
+            for i in range(len(dice), 6):
+                dice.append(Die())
         data = ', '.join([str(d.dots) for d in dice])
         server.send(data)
         #endregion

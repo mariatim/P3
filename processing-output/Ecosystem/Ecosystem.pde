@@ -1,7 +1,7 @@
 import processing.net.*; 
 Client myClient;
 
-byte[] input;
+String input;
 
 ArrayList<Mackerel> m;
 int mackerelFlockSize = 500;
@@ -16,8 +16,8 @@ ArrayList<Whale> w;
 int whaleFlockSize = 9;
 
 void setup() {
-  //size(1280, 640);
-  fullScreen();
+  size(1280, 640);
+  //fullScreen();
   
   myClient = new Client(this, "127.0.0.1", 5001);
 
@@ -46,12 +46,8 @@ void draw() {
   background(0, 0, 30);
   
   if (myClient.available() > 0) {
-    input = myClient.readBytes();
+    input = myClient.readString();
     println(input);
-    println("received");
-    /*for (int i = 0; i <= input.length; i++) {
-      println(int(input[i]));
-    }*/
   }
 
   for (Plankton pl : p) {
