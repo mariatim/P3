@@ -4,6 +4,7 @@ class Tuna {
   PVector acceleration;
   int maxForce;
   int maxSpeed;
+  boolean visible = true;
 
   ArrayList<PVector> history;
   int trailSize;

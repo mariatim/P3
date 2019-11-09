@@ -67,14 +67,28 @@ void draw() {
     tu.edges();
     tu.update();
     tu.flock(t);
-    tu.show();
+    if (tu.visible == true)
+      tu.show();
+    
+    for (Whale wh : w){
+      if (tu.position.dist(wh.position) <= 20 && wh.hunger > 80){
+        tu.visible = false;
+        wh.hunger = 0;
+      }
+    }
   }
 
-  //for (Whale wh : w) {
-  //  wh.edges();
-  //  wh.update();
-  //  wh.flock(w);
-  //  wh.show();
-  //}
-  //println(frameRate);
+  for (Whale wh : w) {
+    wh.edges();
+    
+    if (wh.dying == true) {
+      wh.die();
+    } else {
+      wh.update();
+    }
+      
+    //wh.flock(w);
+    if (wh.visible == true)
+      wh.show();
+  }
 }

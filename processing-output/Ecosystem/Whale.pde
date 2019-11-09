@@ -4,6 +4,11 @@ class Whale {
   PVector acceleration;
   int maxForce;
   int maxSpeed;
+  
+  int hunger;
+  boolean visible;
+  int regeneration;
+  boolean dying;
 
   ArrayList<PVector> history;
   int trailSize;
@@ -21,6 +26,11 @@ class Whale {
     this.maxSpeed = 2;
     history = new ArrayList<PVector>();
     trailSize = 30;
+    
+    this.hunger = int(random(900, 1000));
+    this.visible = true;
+    this.regeneration = 500;
+    this.dying = false;
   }
 
   void edges() {
@@ -141,6 +151,33 @@ class Whale {
     this.history.add(new PVector(this.position.x, this.position.y));
     if (this.history.size() > trailSize) {
       this.history.remove(0);
+    }
+    
+    this.hunger++;
+    if (this.hunger >= 1000)
+      this.dying = true;
+      
+    if (this.visible == false)
+      this.regeneration--;
+      
+    if (this.regeneration == 0)
+      this.visible = true;
+  }
+  
+  void die() {
+    this.position.add(new PVector(0, 5));
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(this.maxSpeed);
+    this.acceleration.mult(0);
+    this.history.add(new PVector(this.position.x, this.position.y));
+    if (this.history.size() > trailSize) {
+      this.history.remove(0);
+    }
+    
+    if (this.position.y > height){
+      this.dying = false;
+      this.visible = false;
+      this.hunger = 0;
     }
   }
 

@@ -5,6 +5,11 @@ class Plankton {
   float nx, ny;
   float r;
 
+  int hunger;
+  boolean visible;
+  int regeneration;
+  boolean dying;
+  
   color c;
   Plankton() {
     this.position = new PVector(random(width), random(height));
@@ -30,6 +35,9 @@ class Plankton {
       c = color(255, 255, 255);
       break;
     }
+
+    this.visible = true;
+    this.regeneration = 500;
   }
 
   void edges() {
