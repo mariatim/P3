@@ -4,13 +4,13 @@ import numpy as np
 from die import Die
 import communication as server
 
+# Load the image and process it for the CV to have it easier to analyse
+video = cv2.VideoCapture("vid.mp4")
+
 # Set up an array for the Die objects
 dice = []
 currentFrame = 0
 server.setup()
-
-# Load the image and process it for the CV to have it easier to analyse
-video = cv2.VideoCapture("vid.mp4")
 
 # Trackbar windows to figure out the thresholds and stuff 
 #region
