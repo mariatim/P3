@@ -52,18 +52,20 @@ class Whale {
       this.applyForce(steering);
     }
   }
-  
-  void avoidPollution(ArrayList<Plastic> pl){
+
+  void avoidPollution(ArrayList<Plastic> pl) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
     for (Plastic other : pl) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (d < perceptionRadius) {
-        PVector diff = PVector.sub(this.position, other.position);
-        diff.div(d * d);
-        steering.add(diff);
-        total++;
+      if (other.isAlive) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (d < perceptionRadius) {
+          PVector diff = PVector.sub(this.position, other.position);
+          diff.div(d * d);
+          steering.add(diff);
+          total++;
+        }
       }
     }
     if (total > 0) {

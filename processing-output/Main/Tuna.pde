@@ -3,7 +3,7 @@ class Tuna {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  
+
   private boolean isAlive;
   private int frameCountWhenKilled;
   private int FRAMES_NEEDED_TO_RESSURECT = 200;
@@ -17,6 +17,8 @@ class Tuna {
   float cohesionBase = .3;
   float seperationValue = .5;
   
+  float alpha;
+
   Tuna() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
@@ -29,6 +31,7 @@ class Tuna {
     trailSize = 8;
     isAlive = true;
     frameCountWhenKilled = 0;
+    alpha = 255;
   }
 
   void edges() {
@@ -58,18 +61,20 @@ class Tuna {
       this.applyForce(steering);
     }
   }
-  
-  void avoidPollution(ArrayList<Plastic> pl){
+
+  void avoidPollution(ArrayList<Plastic> pl) {
     int perceptionRadius = 40;
     PVector steering = new PVector();
     int total = 0;
     for (Plastic other : pl) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (d < perceptionRadius) {
-        PVector diff = PVector.sub(this.position, other.position);
-        diff.div(d * d);
-        steering.add(diff);
-        total++;
+      if (other.isAlive) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (d < perceptionRadius) {
+          PVector diff = PVector.sub(this.position, other.position);
+          diff.div(d * d);
+          steering.add(diff);
+          total++;
+        }
       }
     }
     if (total > 0) {
@@ -80,8 +85,8 @@ class Tuna {
     }
     this.applyForce(steering);
   }
-  
-  void avoidWhales(ArrayList<Whale> wh){
+
+  void avoidWhales(ArrayList<Whale> wh) {
     int perceptionRadius = 80;
     PVector steering = new PVector();
     int total = 0;
@@ -197,8 +202,13 @@ class Tuna {
   }
 
   void show() {
-     noStroke();
-    fill(0, 40, 150);
+    noStroke();
+    if (isAlive) {
+      if (frameCount%2 == 0 && alpha < 255) {
+        alpha++;
+      }
+    }
+    fill(0, 40, 150, alpha);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
     //noFill();
@@ -211,24 +221,24 @@ class Tuna {
     }
     endShape();
   }
-  
-  public boolean isAlive(){
+
+  public boolean isAlive() {
     return isAlive;
   }
-  
-  public void kill(){
+
+  public void kill() {
     isAlive = false;
     frameCountWhenKilled = frameCount;
   }
-  
-  private void ressurect(){
+
+  private void ressurect() {
     isAlive = true;
+    alpha = 0;
   }
-  
-  public void tryToRessurect(){
-  if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT){
-    ressurect();
+
+  public void tryToRessurect() {
+    if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
+      ressurect();
+    }
   }
-  }
-  
 }

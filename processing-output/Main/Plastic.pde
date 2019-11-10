@@ -4,6 +4,7 @@ class Plastic {
   PVector acceleration;
   int r1, r2;
   float alpha;
+  boolean isAlive;
 
   Plastic(PVector pos) {
     position = pos;
@@ -12,17 +13,22 @@ class Plastic {
     r1 = int(random(10, 15));
     r2 = int(random(10, 15));
     alpha = 0;
+    isAlive = true;
   }
 
-  void applyForce(PVector force) {
-    this.acceleration.add(force);
-  }
+
 
   void show() {
-    if (frameCount%2 == 0 && alpha < 160) {
-      alpha++;
+    if (isAlive) {
+      if (frameCount%2 == 0 && this.alpha < 160) {
+        this.alpha++;
+      }
+    } else if (!isAlive) {
+      if (frameCount%2 == 0 && this.alpha > 0) {
+        this.alpha--;
+      }
     }
-    fill(255, 0, 50, alpha);
+    fill(255, 0, 100, alpha);
     noStroke();
     ellipse(this.position.x, this.position.y, r1, r2);
   }
@@ -44,6 +50,10 @@ class Plastic {
    this.velocity = new PVector(0, 0);
    }
    }
+   }
+   
+   void applyForce(PVector force) {
+   this.acceleration.add(force);
    }
    */
 }
