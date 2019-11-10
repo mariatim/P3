@@ -3,13 +3,14 @@ class Whale {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  int maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .8;
   float cohesionValue = .2;
+  float cohesionBase = .3;
   float seperationValue = .4;
 
   Whale() {
@@ -19,6 +20,7 @@ class Whale {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 2;
+    this.baseSpeed = 2;
     history = new ArrayList<PVector>();
     trailSize = 30;
   }
@@ -49,6 +51,28 @@ class Whale {
       steering.limit(maxForce);
       this.applyForce(steering);
     }
+  }
+  
+  void avoidPollution(ArrayList<Plastic> pl){
+    int perceptionRadius = 50;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Plastic other : pl) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
   }
 
   PVector align(ArrayList<Whale> boids) {

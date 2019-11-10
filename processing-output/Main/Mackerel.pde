@@ -3,12 +3,13 @@ class Mackerel {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  int maxSpeed, baseSpeed;
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .65;
   float cohesionValue = .9;
+  float cohesionBase = .9;
   float seperationValue = .8;
 
   Mackerel() {
@@ -18,6 +19,7 @@ class Mackerel {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 5;
+    this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
   }
@@ -50,6 +52,71 @@ class Mackerel {
     }
   }
 
+  void avoidPollution(ArrayList<Plastic> pl){
+    int perceptionRadius = 30;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Plastic other : pl) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+  
+  void avoidWhales(ArrayList<Whale> wh){
+    int perceptionRadius = 80;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Whale other : wh) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+  
+  void avoidTuna(ArrayList<Tuna> t){
+    int perceptionRadius = 80;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Tuna other : t) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
 
   PVector align(ArrayList<Mackerel> boids) {
     int perceptionRadius = 50;
@@ -146,7 +213,7 @@ class Mackerel {
 
   void show() {
     noStroke();
-    fill(192,192,192);
+    fill(192, 192, 192);
     ellipse(this.position.x, this.position.y, 8, 8);
     beginShape();
     //noFill();

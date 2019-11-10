@@ -3,14 +3,20 @@ class Tuna {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  
+  private boolean isAlive;
+  private int frameCountWhenKilled;
+  private int FRAMES_NEEDED_TO_RESSURECT = 200;
+  int maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .3;
   float cohesionValue = .3;
+  float cohesionBase = .3;
   float seperationValue = .5;
+  
   Tuna() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
@@ -18,8 +24,11 @@ class Tuna {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 5;
+    this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
+    isAlive = true;
+    frameCountWhenKilled = 0;
   }
 
   void edges() {
@@ -48,6 +57,50 @@ class Tuna {
       steering.limit(maxForce);
       this.applyForce(steering);
     }
+  }
+  
+  void avoidPollution(ArrayList<Plastic> pl){
+    int perceptionRadius = 40;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Plastic other : pl) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+  
+  void avoidWhales(ArrayList<Whale> wh){
+    int perceptionRadius = 80;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Whale other : wh) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
   }
 
   PVector align(ArrayList<Tuna> boids) {
@@ -144,7 +197,7 @@ class Tuna {
   }
 
   void show() {
-    noStroke();
+     noStroke();
     fill(0, 40, 150);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
@@ -158,4 +211,24 @@ class Tuna {
     }
     endShape();
   }
+  
+  public boolean isAlive(){
+    return isAlive;
+  }
+  
+  public void kill(){
+    isAlive = false;
+    frameCountWhenKilled = frameCount;
+  }
+  
+  private void ressurect(){
+    isAlive = true;
+  }
+  
+  public void tryToRessurect(){
+  if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT){
+    ressurect();
+  }
+  }
+  
 }
