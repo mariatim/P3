@@ -10,6 +10,11 @@ class Ecosystem {
 
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
+  
+  private int MIN_DIE_VALUE = 1;
+  private int MAX_DIE_VALUE = 6;
+  
+  private int fishingLevel;
 
   Ecosystem() {
     m = new ArrayList<Mackerel>();
@@ -31,6 +36,8 @@ class Ecosystem {
     for (int i = 0; i < whaleFlockSize; i++) {
       w.add(new Whale());
     }
+    
+    fishingLevel = 1;
   }
   
   void display(){
@@ -74,4 +81,36 @@ class Ecosystem {
       wh.show();
     }
   }
+  
+  public void changeFishingRate(int newFishingRate){
+    if ((newFishingRate >= MIN_DIE_VALUE) && (newFishingRate <= MAX_DIE_VALUE) && (newFishingRate != fishingLevel)){
+      fishingLevel = newFishingRate;
+      fishTuna();
+    }
+  }
+  
+  private void fishTuna(){
+    if (fishingLevel==1){
+      // tuna you are free to live
+    }else if(fishingLevel==2){
+      fishTuna(t.size()/10);
+    }else if(fishingLevel==3){
+      fishTuna(t.size()/8);
+    }else if(fishingLevel==4){
+      fishTuna(t.size()/6);
+    }else if(fishingLevel==5){
+      fishTuna(t.size()/4);
+    }else if(fishingLevel==6){
+      fishTuna(t.size()/2);
+    }
+  }
+  
+  private void fishTuna(int numberOfTunaToFish){
+    for (int i = 0; i < numberOfTunaToFish; i++){
+      if (t.size() != 0){
+        t.remove(0);
+      }
+    }
+  }
+  
 }
