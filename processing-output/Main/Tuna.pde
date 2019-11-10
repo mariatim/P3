@@ -6,6 +6,8 @@ class Tuna {
   int maxSpeed;
   
   private boolean isAlive;
+  private int frameCountWhenKilled;
+  private int FRAMES_NEEDED_TO_RESSURECT = 200;
 
   ArrayList<PVector> history;
   int trailSize;
@@ -24,6 +26,7 @@ class Tuna {
     history = new ArrayList<PVector>();
     trailSize = 8;
     isAlive = true;
+    frameCountWhenKilled = 0;
   }
 
   void edges() {
@@ -167,11 +170,19 @@ class Tuna {
     return isAlive;
   }
   
-  void kill(){
+  public void kill(){
     isAlive = false;
+    frameCountWhenKilled = frameCount;
   }
   
-  void ressurect(){
+  private void ressurect(){
     isAlive = true;
   }
+  
+  public void tryToRessurect(){
+  if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT){
+    ressurect();
+  }
+  }
+  
 }

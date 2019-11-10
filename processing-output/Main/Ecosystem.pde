@@ -71,6 +71,8 @@ class Ecosystem {
         tu.update();
         tu.flock(t);
         tu.show();
+      }else {
+        tu.tryToRessurect();
       }
     }
   }
