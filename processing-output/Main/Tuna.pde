@@ -49,6 +49,50 @@ class Tuna {
       this.applyForce(steering);
     }
   }
+  
+  void avoidPollution(ArrayList<Plastic> pl){
+    int perceptionRadius = 40;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Plastic other : pl) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+  
+  void avoidWhales(ArrayList<Whale> wh){
+    int perceptionRadius = 80;
+    PVector steering = new PVector();
+    int total = 0;
+    for (Whale other : wh) {
+      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (d < perceptionRadius) {
+        PVector diff = PVector.sub(this.position, other.position);
+        diff.div(d * d);
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
 
   PVector align(ArrayList<Tuna> boids) {
     int perceptionRadius = 50;
