@@ -15,7 +15,7 @@ def setup():
 
 def send(data):
     global conn
-    conn.sendall(bytes(data, "ascii"))
+    conn.sendall(bytes(data))
 
 def end():
     global conn

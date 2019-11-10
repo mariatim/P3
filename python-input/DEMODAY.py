@@ -66,8 +66,8 @@ while True:
             # Alternative image processing with dots
             maskDots = cv2.blur(maskDots, (2, 2))
             _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-            maskDots = cv2.dilate(maskDots, np.ones(h["dots_dilate"], np.uint8))
-            maskDots = cv2.erode(maskDots, np.ones(h["dots_erode"], np.uint8))
+            maskDots = cv2.dilate(maskDots, np.ones(h["dot_dilate"], np.uint8))
+            maskDots = cv2.erode(maskDots, np.ones(h["dot_erode"], np.uint8))
             #endregion
 
             # Find contours and draw them
@@ -106,15 +106,18 @@ while True:
                         cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
                         cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
 
-            if die.dots == 0:
-                die.dots = 0
-            else:
-                die.dots -= 1
+            try:
+                if die.dots == 0:
+                    die.dots = 0
+                else:
+                    die.dots -= 1
+
+                h["value"] = die.dots
+            except:
+                pass
             #endregion
 
-            h.value = die.dots
-
-        data = bytes([h.value for h in hues])
+        data = [h["value"] for h in hues]
         server.send(data)
 
     currentFrame += 1
