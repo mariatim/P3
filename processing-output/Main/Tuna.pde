@@ -3,13 +3,14 @@ class Tuna {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  int maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .3;
   float cohesionValue = .3;
+  float cohesionBase = .3;
   float seperationValue = .5;
   Tuna() {
     this.position = new PVector(random(width), random(height));
@@ -18,6 +19,7 @@ class Tuna {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 5;
+    this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
   }
