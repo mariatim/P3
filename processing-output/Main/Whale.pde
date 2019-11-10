@@ -3,13 +3,14 @@ class Whale {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  int maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .8;
   float cohesionValue = .2;
+  float cohesionBase = .3;
   float seperationValue = .4;
 
   Whale() {
@@ -19,6 +20,7 @@ class Whale {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 2;
+    this.baseSpeed = 2;
     history = new ArrayList<PVector>();
     trailSize = 30;
   }

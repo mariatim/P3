@@ -10,7 +10,12 @@ class Ecosystem {
 
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
-
+  
+  private int MIN_TEMP_VALUE = 1;
+  private int MAX_TEMP_VALUE = 6;
+  
+  private int temperatureLevel;
+  
   Ecosystem() {
     m = new ArrayList<Mackerel>();
     for (int i = 0; i < mackerelFlockSize; i++) {
@@ -31,6 +36,8 @@ class Ecosystem {
     for (int i = 0; i < whaleFlockSize; i++) {
       w.add(new Whale());
     }
+    
+    temperatureLevel = 5;
   }
   
   void display(){
@@ -72,6 +79,26 @@ class Ecosystem {
       wh.update();
       wh.flock(w);
       wh.show();
+    }
+  }
+  
+  void bg() {
+    background(7 + 6*(temperatureLevel-1), 20 - 2*(temperatureLevel-1), 35 - 6*(temperatureLevel-1));
+  }
+  
+  void changeTemperature(int newTemperature) {
+    this.temperatureLevel = newTemperature;
+    for (Mackerel ma : m) {
+      ma.maxSpeed = ma.baseSpeed + newTemperature - 1;
+      ma.cohesionValue = newTemperature == 1 ? ma.cohesionBase : ma.cohesionBase/newTemperature*0.2;
+    }
+    for (Tuna tu : t) {
+      tu.maxSpeed = tu.baseSpeed + newTemperature - 1;
+      tu.cohesionValue = tu.cohesionBase/newTemperature*0.2;
+    }
+    for (Whale wh : w) {
+      wh.maxSpeed = wh.baseSpeed + newTemperature - 1;
+      wh.cohesionValue = wh.cohesionBase/newTemperature*0.2;
     }
   }
 }

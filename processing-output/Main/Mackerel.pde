@@ -3,12 +3,13 @@ class Mackerel {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed;
+  int maxSpeed, baseSpeed;
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .65;
   float cohesionValue = .9;
+  float cohesionBase = .9;
   float seperationValue = .8;
 
   Mackerel() {
@@ -18,6 +19,7 @@ class Mackerel {
     this.acceleration = new PVector();
     this.maxForce = 1;
     this.maxSpeed = 5;
+    this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
   }
