@@ -84,6 +84,10 @@ class Ecosystem {
     }
   }
   
+  /**
+  Methods for the fishing of tuna:
+  **/
+  
   public void changeFishingRate(int newFishingRate){
     if ((newFishingRate >= MIN_DIE_VALUE) && (newFishingRate <= MAX_DIE_VALUE) && (newFishingRate != fishingLevel)){
       fishingLevel = newFishingRate;
