@@ -16,6 +16,11 @@ class Ecosystem {
   
   private int temperatureLevel;
   
+  
+  private int MIN_DIE_VALUE = 1;
+  private int MAX_DIE_VALUE = 6;
+  
+  private int fishingLevel;
 
   PlasticIsland plasticIsland;
 
@@ -39,6 +44,8 @@ class Ecosystem {
     for (int i = 0; i < whaleFlockSize; i++) {
       w.add(new Whale());
     }
+    
+    fishingLevel = 1;
     
     temperatureLevel = 5;
 
@@ -75,12 +82,14 @@ class Ecosystem {
 
   void showTuna() {
     for (Tuna tu : t) {
-      tu.edges();
-      tu.avoidPollution(plasticIsland.pl);
-      tu.avoidWhales(w);
-      tu.update();
-      tu.flock(t);
-      tu.show();
+      if (tu.isAlive()){
+        tu.edges();
+        tu.update();
+        tu.flock(t);
+        tu.show();
+      }else {
+        tu.tryToRessurect();
+      }
     }
   }
 
@@ -118,4 +127,67 @@ class Ecosystem {
     plasticIsland.addPlastic();
     plasticIsland.buildIsland();
   }
+  
+  /**
+  Methods for the fishing of tuna:
+  **/
+  
+  public void changeFishingRate(int newFishingRate){
+    if ((newFishingRate >= MIN_DIE_VALUE) && (newFishingRate <= MAX_DIE_VALUE) && (newFishingRate != fishingLevel)){
+      fishingLevel = newFishingRate;
+      fishTuna();
+    }
+  }
+  
+  private void fishTuna(){
+    if (fishingLevel==1){
+      // tuna you are free to live
+    }else if(fishingLevel==2){
+      fishTuna(getNumberOfLiveTuna()/10);
+    }else if(fishingLevel==3){
+      fishTuna(getNumberOfLiveTuna()/8);
+    }else if(fishingLevel==4){
+      fishTuna(getNumberOfLiveTuna()/6);
+    }else if(fishingLevel==5){
+      fishTuna(getNumberOfLiveTuna()/2);
+    }else if(fishingLevel==6){
+      fishTuna(getNumberOfLiveTuna()-1);
+    }
+  }
+  
+  private void fishTuna(int numberOfTunaToFish){
+    
+    if (numberOfTunaToFish >= getNumberOfLiveTuna()){
+        numberOfTunaToFish = getNumberOfLiveTuna();
+    }
+    
+    while(numberOfTunaToFish > 0){
+      if(getIndexForFirstAliveTuna() == -1){
+        break;
+      }
+      t.get(getIndexForFirstAliveTuna()).kill();
+      numberOfTunaToFish--;
+    }
+    
+  }
+  
+  public int getNumberOfLiveTuna(){
+  int sum = 0;
+  for (int i = 0; i < t.size(); i++){
+    if (t.get(i).isAlive()){
+      sum++;
+    }
+  }
+  return sum;
+  }
+  
+  private int getIndexForFirstAliveTuna(){
+      for(int i = 0; i < t.size(); i++){
+        if (t.get(i).isAlive()){
+          return i;
+        } 
+      }
+      return -1;
+  }
+  
 }
