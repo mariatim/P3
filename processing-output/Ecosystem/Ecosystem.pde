@@ -3,6 +3,8 @@ Client myClient;
 
 String input;
 
+PImage iceBG, transp;
+
 ArrayList<Mackerel> m;
 int mackerelFlockSize = 500;
 
@@ -18,6 +20,15 @@ int whaleFlockSize = 9;
 void setup() {
   size(1280, 640);
   //fullScreen();
+
+  iceBG = loadImage("ice.jpg");
+  iceBG.resize(width, height);
+  PGraphics pg = createGraphics(width, height);
+  pg.beginDraw();
+  pg.tint(255, 50);
+  pg.image(iceBG, 0, 0);
+  pg.endDraw();
+  transp = pg.get();
   
   myClient = new Client(this, "127.0.0.1", 5001);
 
@@ -44,6 +55,7 @@ void setup() {
 
 void draw() {
   background(0, 0, 30);
+  image(transp, 0, 0, width, height);
   
   if (myClient.available() > 0) {
     input = myClient.readString();
