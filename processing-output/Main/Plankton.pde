@@ -4,8 +4,8 @@ class Plankton {
   PVector acceleration;
   float nx, ny;
   float r;
-
   color c;
+  
   Plankton() {
     this.position = new PVector(random(width), random(height));
     this.velocity = new PVector();

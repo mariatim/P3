@@ -4,8 +4,8 @@ String input;
 Ecosystem e;
 
 void setup() {
-  size(1280, 640);
-  //fullScreen();
+  //size(1280, 640);
+  fullScreen(P2D);
 
   myClient = new Client(this, "127.0.0.1", 5001);
 
@@ -19,7 +19,7 @@ void draw() {
     input = myClient.readString();
     println(input);
   }
-  
+
   e.display();
   println(frameRate);
 }

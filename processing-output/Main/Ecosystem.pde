@@ -11,6 +11,8 @@ class Ecosystem {
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
 
+  PlasticIsland plasticIsland;
+
   Ecosystem() {
     m = new ArrayList<Mackerel>();
     for (int i = 0; i < mackerelFlockSize; i++) {
@@ -31,13 +33,16 @@ class Ecosystem {
     for (int i = 0; i < whaleFlockSize; i++) {
       w.add(new Whale());
     }
+
+    plasticIsland = new PlasticIsland();
   }
-  
-  void display(){
+
+  void display() {
     showPlanktons();
     showMackerels();
     showTuna();
     showWhales();
+    showIsland();
   }
 
   void showPlanktons() {
@@ -51,6 +56,9 @@ class Ecosystem {
   void showMackerels() {
     for (Mackerel ma : m) {
       ma.edges();
+      ma.avoidPollution(plasticIsland.pl);
+      ma.avoidWhales(w);
+      ma.avoidTuna(t);
       ma.update();
       ma.flock(m);
       ma.show();
@@ -60,6 +68,8 @@ class Ecosystem {
   void showTuna() {
     for (Tuna tu : t) {
       tu.edges();
+      tu.avoidPollution(plasticIsland.pl);
+      tu.avoidWhales(w);
       tu.update();
       tu.flock(t);
       tu.show();
@@ -69,9 +79,15 @@ class Ecosystem {
   void showWhales() {
     for (Whale wh : w) {
       wh.edges();
+      wh.avoidPollution(plasticIsland.pl);
       wh.update();
       wh.flock(w);
       wh.show();
     }
+  }
+
+  void showIsland() {
+    plasticIsland.addPlastic();
+    plasticIsland.buildIsland();
   }
 }
