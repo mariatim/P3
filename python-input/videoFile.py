@@ -17,7 +17,6 @@ server.setup()
 # Trackbar windows to figure out the thresholds and stuff
 #region
 
-
 def nothing(x):
     pass
 
@@ -33,13 +32,8 @@ cv2.createTrackbar("U-V", "Trackbars", 60, 255, nothing)
 cv2.createTrackbar("Epsilon", "Trackbars", 16, 500, nothing)
 cv2.createTrackbar("Dilate", "Trackbars", 10, 50, nothing)
 cv2.createTrackbar("Erode", "Trackbars", 0, 50, nothing)
-cv2.createTrackbar("Thiccness", "Trackbars", 4, 10, nothing)
-cv2.createTrackbar("Contours", "Trackbars", 4, 10, nothing)
-
-cv2.namedWindow("TrackbarsDots")
-cv2.resizeWindow("TrackbarsDots", 500, 500)
-cv2.createTrackbar("Dilate", "TrackbarsDots", 5, 50, nothing)
-cv2.createTrackbar("Erode", "TrackbarsDots", 1, 50, nothing)
+cv2.createTrackbar("Dilate-dot", "Trackbars", 5, 50, nothing)
+cv2.createTrackbar("Erode-dot", "Trackbars", 1, 50, nothing)
 #endregion
 
 maskDice = None
@@ -77,8 +71,8 @@ while True:
     # maskDots = maskDice
     maskDots = cv2.blur(maskDots, (2, 2))
     _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-    kernelSizeErodeDots = cv2.getTrackbarPos("Erode", "TrackbarsDots")
-    kernelSizeDilateDots = cv2.getTrackbarPos("Dilate", "TrackbarsDots")
+    kernelSizeErodeDots = cv2.getTrackbarPos("Erode-dot", "Trackbars")
+    kernelSizeDilateDots = cv2.getTrackbarPos("Dilate-dot", "Trackbars")
     maskDots = cv2.erode(maskDots, np.ones(
         (kernelSizeErodeDots, kernelSizeErodeDots), np.uint8))
     maskDots = cv2.dilate(maskDots, np.ones(
@@ -95,7 +89,7 @@ while True:
     for c in contours:
         approx = cv2.approxPolyDP(
             c, cv2.getTrackbarPos("Epsilon", "Trackbars"), True)
-        if len(approx) == cv2.getTrackbarPos("Contours", "Trackbars"):
+        if len(approx) == 4:
             coords = [a[0] for a in approx]
             d = Die(coords, 0)
             if (d.isSquare()):
@@ -103,10 +97,8 @@ while True:
                 dice.append(Die(coords, 0, "blue"))
             else:
                 color = (200, 0, 0)
-            cv2.drawContours(frame, [approx], 0, color, cv2.getTrackbarPos(
-                "Thiccness", "Trackbars"))
-            cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), cv2.getTrackbarPos(
-                "Thiccness", "Trackbars"))
+            cv2.drawContours(frame, [approx], 0, color, 2)
+            cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), 2)
             cv2.circle(frame, tuple(d.roundedCenter), int(
                 d.minCenterDistance), (0, 0, 255), 3)
             cv2.circle(frame, tuple(d.roundedCenter), int(
@@ -119,17 +111,15 @@ while True:
 
     for c in contours:
         approx = cv2.approxPolyDP(c, 1, False)
-        if len(approx) >= cv2.getTrackbarPos("Contours", "Trackbars"):
+        if len(approx) >= 4:
             x, y, w, h = cv2.boundingRect(approx)
             x2 = x + w
             y2 = y + h
             for d in dice:
                 if (d.isBelongs([x, x2], [y, y2])):
                     d.dots += 1
-                    cv2.drawContours(frame, [approx], 0, (0, 200, 200), cv2.getTrackbarPos(
-                        "Thiccness", "Trackbars"))
-                    cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), cv2.getTrackbarPos(
-                        "Thiccness", "Trackbars"))
+                    cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
+                    cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
 
     if len(dice) < 3:
         for i in range(len(dice), 3):
