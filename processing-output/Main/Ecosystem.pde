@@ -66,10 +66,12 @@ class Ecosystem {
 
   void showTuna() {
     for (Tuna tu : t) {
-      tu.edges();
-      tu.update();
-      tu.flock(t);
-      tu.show();
+      if (tu.isAlive()){
+        tu.edges();
+        tu.update();
+        tu.flock(t);
+        tu.show();
+      }
     }
   }
 
@@ -93,24 +95,51 @@ class Ecosystem {
     if (fishingLevel==1){
       // tuna you are free to live
     }else if(fishingLevel==2){
-      fishTuna(t.size()/10);
+      fishTuna(getNumberOfLiveTuna()/10);
     }else if(fishingLevel==3){
-      fishTuna(t.size()/8);
+      fishTuna(getNumberOfLiveTuna()/8);
     }else if(fishingLevel==4){
-      fishTuna(t.size()/6);
+      fishTuna(getNumberOfLiveTuna()/6);
     }else if(fishingLevel==5){
-      fishTuna(t.size()/4);
+      fishTuna(getNumberOfLiveTuna()/2);
     }else if(fishingLevel==6){
-      fishTuna(t.size()/2);
+      fishTuna(getNumberOfLiveTuna()-1);
     }
   }
   
   private void fishTuna(int numberOfTunaToFish){
-    for (int i = 0; i < numberOfTunaToFish; i++){
-      if (t.size() != 0){
-        t.remove(0);
-      }
+    
+    if (numberOfTunaToFish >= getNumberOfLiveTuna()){
+        numberOfTunaToFish = getNumberOfLiveTuna();
     }
+    
+    while(numberOfTunaToFish > 0){
+      if(getIndexForFirstAliveTuna() == -1){
+        break;
+      }
+      t.get(getIndexForFirstAliveTuna()).kill();
+      numberOfTunaToFish--;
+    }
+    
+  }
+  
+  public int getNumberOfLiveTuna(){
+  int sum = 0;
+  for (int i = 0; i < t.size(); i++){
+    if (t.get(i).isAlive()){
+      sum++;
+    }
+  }
+  return sum;
+  }
+  
+  private int getIndexForFirstAliveTuna(){
+      for(int i = 0; i < t.size(); i++){
+        if (t.get(i).isAlive()){
+          return i;
+        } 
+      }
+      return -1;
   }
   
 }

@@ -4,6 +4,8 @@ class Tuna {
   PVector acceleration;
   int maxForce;
   int maxSpeed;
+  
+  private boolean isAlive;
 
   ArrayList<PVector> history;
   int trailSize;
@@ -11,6 +13,7 @@ class Tuna {
   float alignValue = .3;
   float cohesionValue = .3;
   float seperationValue = .5;
+  
   Tuna() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
@@ -20,6 +23,7 @@ class Tuna {
     this.maxSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
+    isAlive = true;
   }
 
   void edges() {
@@ -144,7 +148,7 @@ class Tuna {
   }
 
   void show() {
-    noStroke();
+     noStroke();
     fill(0, 40, 150);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
@@ -157,5 +161,17 @@ class Tuna {
       //vertex(pos.x, pos.y);
     }
     endShape();
+  }
+  
+  public boolean isAlive(){
+    return isAlive;
+  }
+  
+  void kill(){
+    isAlive = false;
+  }
+  
+  void ressurect(){
+    isAlive = true;
   }
 }
