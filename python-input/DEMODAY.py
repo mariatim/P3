@@ -9,6 +9,8 @@ import communication as server
 #Add 0 for using the videofeed.
 video = cv2.VideoCapture(0)
 
+dice = []
+values = []
 currentFrame = 0
 server.setup()
 
@@ -52,37 +54,38 @@ while True:
     if currentFrame % 15 == 0:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for h in hues:
+        values = []
+        for hue in hues:
             #region Image processing
-            lower_threshold = np.array(h["lower_threshold"])
-            upper_threshold = np.array(h["upper_threshold"])
+            lower_threshold = np.array(hue["lower_threshold"])
+            upper_threshold = np.array(hue["upper_threshold"])
 
             maskDice = cv2.inRange(hsv, lower_threshold, upper_threshold)
-            maskDice = cv2.bilateralFilter(maskDice, h["bilateral"][0], h["bilateral"][1], h["bilateral"][2])
+            maskDice = cv2.bilateralFilter(maskDice, hue["bilateral"][0], hue["bilateral"][1], hue["bilateral"][2])
             maskDots = maskDice
-            maskDice = cv2.erode(maskDice, np.ones(h["dice_erode"], np.uint8))
-            maskDice = cv2.dilate(maskDice, np.ones(h["dice_dilate"], np.uint8))
+            maskDice = cv2.erode(maskDice, np.ones(hue["dice_erode"], np.uint8))
+            maskDice = cv2.dilate(maskDice, np.ones(hue["dice_dilate"], np.uint8))
 
             # Alternative image processing with dots
             maskDots = cv2.blur(maskDots, (2, 2))
             _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-            maskDots = cv2.dilate(maskDots, np.ones(h["dot_dilate"], np.uint8))
-            maskDots = cv2.erode(maskDots, np.ones(h["dot_erode"], np.uint8))
+            maskDots = cv2.dilate(maskDots, np.ones(hue["dot_dilate"], np.uint8))
+            maskDots = cv2.erode(maskDots, np.ones(hue["dot_erode"], np.uint8))
             #endregion
 
             # Find contours and draw them
             #region Dice
             contours, _ = cv2.findContours(maskDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-            die = None
+            dice = []
             for c in contours:
-                approx = cv2.approxPolyDP(c, h["dice_epsilon"], True)
+                approx = cv2.approxPolyDP(c, hue["dice_epsilon"], True)
                 if len(approx) == 4:
                     coords = [a[0] for a in approx]
                     d = Die(coords, 0)
                     if (d.isSquare()):
                         color = (0, 200, 0)
-                        die = Die(coords, 0, h["color"])
+                        dice.append(Die(coords, 0, hue["color"]))
                     else:
                         color = (200, 0, 0)
                     cv2.drawContours(frame, [approx], 0, color, 2)
@@ -101,23 +104,26 @@ while True:
                     x, y, w, h = cv2.boundingRect(approx)
                     x2 = x + w
                     y2 = y + h
-                    if (die.isBelongs([x, x2], [y, y2])):
-                        die.dots += 1 if die.dots < 6 else die.dots
-                        cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
-                        cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
+                    for d in dice:
+                        if (d.isBelongs([x, x2], [y, y2])):
+                            if d.dots < 6:
+                                d.dots += 1
+                            cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
+                            cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
 
-            try:
-                if die.dots == 0:
-                    die.dots = 0
+            for d in dice:
+                if d.dots == 0:
+                    d.dots = 0
                 else:
-                    die.dots -= 1
-
-                h["value"] = die.dots
-            except:
-                pass
+                    d.dots -= 1
             #endregion
+            if len(dice) > 0:
+                values.append(dice[0].dots)
 
-        data = [h["value"] for h in hues]
+        if len(values) != 3:
+            for i in range(3 - len(values)):
+                values.append(1)
+        data = str(values)[1:-1]
         server.send(data)
 
     currentFrame += 1

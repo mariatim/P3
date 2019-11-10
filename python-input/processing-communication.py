@@ -8,10 +8,10 @@ s.bind((HOST, PORT))
 s.listen(1)
 conn, addr = s.accept()
 print('Connected by', addr)
-data = [5, 4, 1, 6, 4, 3]
+data = str([1, 1, 1])
 
 #conn.sendall(data.encode())
-conn.sendall(bytes(data))
+conn.sendall(bytes(data, "ascii"))
 conn.close()
 # optionally put a loop here so that you start
 # listening again after the connection closes

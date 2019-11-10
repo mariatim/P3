@@ -6,7 +6,7 @@ conn = None
 def setup():
     global conn
     HOST = ''                 # Symbolic name meaning all available interfaces
-    PORT = 5001              # Arbitrary non-privileged port
+    PORT = 1234              # Arbitrary non-privileged port
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(1)
@@ -15,7 +15,7 @@ def setup():
 
 def send(data):
     global conn
-    conn.sendall(bytes(data))
+    conn.sendall(bytes(data, "ascii"))
 
 def end():
     global conn

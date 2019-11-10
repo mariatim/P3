@@ -172,7 +172,6 @@ class Ecosystem {
   void changePollution(int newPollutionLevel) {
     if ((newPollutionLevel >= MIN_DIE_VALUE) && (newPollutionLevel <= MAX_DIE_VALUE) && (newPollutionLevel != pollutionLevel)) {
       this.pollutionLevel = newPollutionLevel;
-      println("pollution changed");
     }
   }
 
