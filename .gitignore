@@ -1,3 +1,5 @@
 # Ignore PyCharm files
 
 .idea/*
+
+python-input/.idea/
