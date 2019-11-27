@@ -10,18 +10,18 @@ import communication as server
 video = cv2.VideoCapture(0)
 
 dice = []
-values = []
+values = [1, 1, 1]
 currentFrame = 0
 server.setup()
 
-blue = {"lower_threshold" : [100, 50, 0],
-        "upper_threshold" : [130, 175, 60],
-        "bilateral" : (20, 100, 100),
-        "dice_erode" : (0, 0),
-        "dice_dilate" : (10, 10),
-        "dot_dilate" : (7, 7),
+blue = {"lower_threshold" : [100, 160, 0],
+        "upper_threshold" : [130, 255, 110],
+        "bilateral" : (40, 100, 100),
+        "dice_erode" : (1, 1),
+        "dice_dilate" : (7, 7),
+        "dot_dilate" : (5, 5),
         "dot_erode" : (1, 7),
-        "dice_epsilon" : 16,
+        "dice_epsilon" : 20,
         "color" : "blue",
         "value" : 1}
 red = {"lower_threshold": [0, 135, 80],
@@ -51,10 +51,10 @@ hues = [blue, red, green]
 while True:
     # Read the video and convert the value system to Hue-Sat-Val
     _, frame = video.read()
-    if currentFrame % 15 == 0:
+    if currentFrame % 30 == 0:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        values = []
+        values = [1, 1, 1]
         for hue in hues:
             #region Image processing
             lower_threshold = np.array(hue["lower_threshold"])
@@ -106,7 +106,7 @@ while True:
                     y2 = y + h
                     for d in dice:
                         if (d.isBelongs([x, x2], [y, y2])):
-                            if d.dots < 6:
+                            if d.dots < 7:
                                 d.dots += 1
                             cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
                             cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
@@ -117,12 +117,15 @@ while True:
                 else:
                     d.dots -= 1
             #endregion
-            if len(dice) > 0:
-                values.append(dice[0].dots)
 
-        if len(values) != 3:
-            for i in range(3 - len(values)):
-                values.append(1)
+            if len(dice) > 0:
+                if hue["color"] == "red":
+                    values[0] = dice[0].dots
+                elif hue["color"] == "green":
+                    values[1] = dice[0].dots
+                elif hue["color"] == "blue":
+                    values[2] = dice[0].dots
+
         data = str(values)[1:-1]
         server.send(data)
 

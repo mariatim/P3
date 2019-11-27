@@ -1,10 +1,10 @@
 class PlasticIsland {
   ArrayList<Plastic> pl;
-  int maxSize;
+  float maxSize;
 
   PlasticIsland() {
     pl = new ArrayList<Plastic>();
-    maxSize = 1500;
+    maxSize = 4000;
     pl.add(new Plastic(new PVector(random(width/6, width-width/6), random(height/6, height-height/6))));
     for (int i = 0; i <= maxSize-2; i++) {
       PVector p = (pl.get(pl.size() - 1).position.copy());
@@ -14,7 +14,7 @@ class PlasticIsland {
     }
   }
 
-  void addPlastic(int newSize) {
+  void addPlastic(float newSize) {
     if (frameCount % 5 == 0) {
       for (int i = 0; i <= newSize-1; i++) {
         pl.get(i).isAlive = true;
@@ -23,7 +23,7 @@ class PlasticIsland {
   }
 
 
-  void removePlastic(int newSize) {
+  void removePlastic(float newSize) {
     if (frameCount % 5 == 0) {
       for (int i = pl.size()-1; i >= pl.size()-newSize; i--) {
         pl.get(i).isAlive = false;
@@ -34,6 +34,7 @@ class PlasticIsland {
 
   void buildIsland() {
     for (Plastic p : pl) {
+      p.drift();
       p.show();
     }
   }

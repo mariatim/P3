@@ -24,7 +24,7 @@ class Plastic {
         this.alpha++;
       }
     } else if (!isAlive) {
-      if (frameCount%2 == 0 && this.alpha > 0) {
+      if (frameCount%1 == 0 && this.alpha > 0) {
         this.alpha--;
       }
     }
@@ -32,17 +32,17 @@ class Plastic {
     noStroke();
     ellipse(this.position.x, this.position.y, r1, r2);
   }
-  /*
+  
   void drift() {
-   PVector dir = PVector.random2D();
-   dir.normalize();
-   dir.mult(.01);
-   this.acceleration = dir;
-   this.velocity.add(this.acceleration);
-   this.position.add(this.velocity);
-   this.acceleration.mult(0);
-   }
-   
+    PVector dir = PVector.random2D();
+    dir.normalize();
+    dir.mult(.0001);
+    this.acceleration = dir;
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    this.acceleration.mult(0);
+  }
+  /*
    void stick(ArrayList<Plastic> pl) {
    for (Plastic other : pl) {
    float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);

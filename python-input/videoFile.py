@@ -58,7 +58,7 @@ while True:
          cv2.getTrackbarPos("U-V", "Trackbars")])
 
     maskDice = cv2.inRange(hsv, lower_threshold, upper_threshold)
-    maskDice = cv2.bilateralFilter(maskDice, 20, 100, 100)
+    maskDice = cv2.bilateralFilter(maskDice, 40, 100, 100)
     maskDots = maskDice
     kernelSizeErodeDice = cv2.getTrackbarPos("Erode", "Trackbars")
     kernelSizeDilateDice = cv2.getTrackbarPos("Dilate", "Trackbars")
@@ -124,10 +124,11 @@ while True:
     if len(dice) < 3:
         for i in range(len(dice), 3):
             dice.append(Die())
-    if d.dots == 0:
-        d.dots = 0
-    else:
-        d.dots = d.dots -1
+    for d in dice:
+        if d.dots == 0:
+            d.dots = 0
+        else:
+            d.dots = d.dots -1
 
     data = ', '.join([d.color + ": " + str(d.dots) for d in dice])
     server.send(data)

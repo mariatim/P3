@@ -1,14 +1,13 @@
 import processing.net.*; 
 Client myClient;
-String input;
+String input, oldInput;
 int[] inputInt = new int[3];
 String[] inputSplit;
-//byte[] input;
 Ecosystem e;
 
 void setup() {
-  //size(1280, 640);
-  fullScreen(P2D);
+  size(1920, 1080);
+  //fullScreen(P2D);
 
   myClient = new Client(this, "127.0.0.1", 1234);
 
@@ -17,8 +16,12 @@ void setup() {
 
 void draw() {
   if (myClient.available() > 0) {
+    oldInput = input;
     input = myClient.readString();
     inputInt = int(split(input, ", "));
+  }
+  if (oldInput != input){
+    println(input);
   }
   e.bg();
   e.display();

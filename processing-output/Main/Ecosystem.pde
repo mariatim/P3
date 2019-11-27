@@ -116,26 +116,26 @@ class Ecosystem {
     switch(pollutionLevel) {
     case 1:
       plasticIsland.addPlastic(0);
-      plasticIsland.removePlastic(1500);
+      plasticIsland.removePlastic(plasticIsland.maxSize);
       break;
     case 2:
-      plasticIsland.addPlastic(400);
-      plasticIsland.removePlastic(1100);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.2);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.8);
       break;
     case 3:
-      plasticIsland.addPlastic(650);
-      plasticIsland.removePlastic(850);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.4);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.6);
       break;
     case 4:
-      plasticIsland.addPlastic(850);
-      plasticIsland.removePlastic(650);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.6);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.4);
       break;
     case 5:
-      plasticIsland.addPlastic(1100);
-      plasticIsland.removePlastic(400);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.8);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.2);
       break;
     case 6:
-      plasticIsland.addPlastic(1500);
+      plasticIsland.addPlastic(plasticIsland.maxSize);
       plasticIsland.removePlastic(0);
       break;
     }
