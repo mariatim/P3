@@ -203,7 +203,7 @@ class Ecosystem {
       }
     }
     for (Whale wh : w) {
-      wh.maxSpeed = wh.baseSpeed*.6 + newTemperature - 1;
+      wh.maxSpeed = wh.baseSpeed + newTemperature - 1;
     }
   }
 

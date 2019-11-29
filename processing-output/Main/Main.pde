@@ -30,6 +30,9 @@ void draw() {
 
   if (inputInt.length > 0) {
     switch(inputInt[0]) {
+    case 0:
+      e.changeTemperature(0);
+      break;
     case 1:
       e.changeTemperature(1);
       break;
@@ -51,6 +54,9 @@ void draw() {
     }
 
     switch(inputInt[1]) {
+    case 0:
+      e.changePollution(0);
+      break;
     case 1:
       e.changePollution(1);
       break;
@@ -72,6 +78,9 @@ void draw() {
     }
 
     switch(inputInt[2]) {
+    case 0:
+      e.changeFishingRate(0);
+      break;
     case 1:
       e.changeFishingRate(1);
       break;
@@ -93,77 +102,47 @@ void draw() {
     }
   }
 }
+
+
 // keyboard interface for debuging
 
 
 void keyPressed() {
   switch(key) {
+  case '0':
+    e.changeTemperature(0);
+    e.changePollution(0);
+    e.changeFishingRate(0);
+    break;
   case '1':
     e.changeTemperature(1);
+    e.changePollution(1);
+    e.changeFishingRate(1);
     break;
   case '2':
     e.changeTemperature(2);
+    e.changePollution(2);
+    e.changeFishingRate(2);
     break;
   case '3':
     e.changeTemperature(3);
+    e.changePollution(3);
+    e.changeFishingRate(3);
     break;
   case '4':
     e.changeTemperature(4);
+    e.changePollution(4);
+    e.changeFishingRate(4);
     break;
   case '5':
     e.changeTemperature(5);
+    e.changePollution(5);
+    e.changeFishingRate(5);
     break;
   case '6':
     e.changeTemperature(6);
+    e.changePollution(6);
+    e.changeFishingRate(6);
     break;
   }
 }
-
-/*
-void keyPressed() {
- switch(key) {
- case '1':
- e.changePollution(1);
- break;
- case '2':
- e.changePollution(2);
- break;
- case '3':
- e.changePollution(3);
- break;
- case '4':
- e.changePollution(4);
- break;
- case '5':
- e.changePollution(5);
- break;
- case '6':
- e.changePollution(6);
- break;
- }
- }
- */
-/*
-void keyPressed() {
- switch(key){
- case '1':
- e.changeFishingRate(1);
- break;
- case '2':
- e.changeFishingRate(2);
- break;
- case '3':
- e.changeFishingRate(3);
- break;
- case '4':
- e.changeFishingRate(4);
- break;
- case '5':
- e.changeFishingRate(5);
- break;
- case '6':
- e.changeFishingRate(6);
- break;
- }
- }
- */

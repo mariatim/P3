@@ -11,7 +11,7 @@ class Whale {
   float alignValue = .8;
   float cohesionValue = .1;
   float cohesionBase = .1;
-  float seperationValue = .4;
+  float seperationValue = .45;
   
   color c;
 
@@ -20,11 +20,11 @@ class Whale {
     this.velocity = PVector.random2D();
     this.velocity.setMag(random(1, 2));
     this.acceleration = new PVector();
-    this.maxForce = 1;
-    this.maxSpeed = 2;
+    this.maxForce = 2;
+    this.maxSpeed = 3;
     this.baseSpeed = 2;
     history = new ArrayList<PVector>();
-    trailSize = 10;
+    trailSize = 25;
     c = color(246, 134, 104);
   }
 
@@ -176,12 +176,12 @@ class Whale {
   void show() {
     noStroke();
     fill(c);
-    ellipse(this.position.x, this.position.y, 50, 50);
+    ellipse(this.position.x, this.position.y, 35, 35);
     beginShape();
     //noFill();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
-      float r = map(i, 0, history.size(), 10, 40);
+      float r = map(i, 0, history.size(), 10, 30);
       ellipse(pos.x, pos.y, r, r);
       //vertex(pos.x, pos.y);
     }

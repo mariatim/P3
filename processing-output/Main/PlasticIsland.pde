@@ -34,7 +34,8 @@ class PlasticIsland {
 
   void buildIsland() {
     for (Plastic p : pl) {
-      p.drift();
+      //p.drift();
+      //p.stick(pl);
       p.show();
     }
   }
