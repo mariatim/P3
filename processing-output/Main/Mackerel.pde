@@ -3,14 +3,16 @@ class Mackerel {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed, baseSpeed;
+  float maxSpeed, baseSpeed;
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .65;
-  float cohesionValue = .9;
-  float cohesionBase = .9;
+  float cohesionValue = .4;
+  float cohesionBase = .4;
   float seperationValue = .8;
+  
+  color c;
 
   Mackerel() {
     this.position = new PVector(random(width), random(height));
@@ -22,6 +24,8 @@ class Mackerel {
     this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
+    
+    c = color(186, 118, 112);
   }
 
   void edges() {
@@ -215,7 +219,7 @@ class Mackerel {
 
   void show() {
     noStroke();
-    fill(192, 192, 192);
+    fill(c);
     ellipse(this.position.x, this.position.y, 8, 8);
     beginShape();
     //noFill();

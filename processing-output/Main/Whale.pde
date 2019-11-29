@@ -3,15 +3,17 @@ class Whale {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed, baseSpeed;
+  float maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .8;
-  float cohesionValue = .2;
-  float cohesionBase = .3;
+  float cohesionValue = .1;
+  float cohesionBase = .1;
   float seperationValue = .4;
+  
+  color c;
 
   Whale() {
     this.position = new PVector(random(width), random(height));
@@ -22,7 +24,8 @@ class Whale {
     this.maxSpeed = 2;
     this.baseSpeed = 2;
     history = new ArrayList<PVector>();
-    trailSize = 30;
+    trailSize = 10;
+    c = color(246, 134, 104);
   }
 
   void edges() {
@@ -172,7 +175,7 @@ class Whale {
 
   void show() {
     noStroke();
-    fill(40);
+    fill(c);
     ellipse(this.position.x, this.position.y, 50, 50);
     beginShape();
     //noFill();

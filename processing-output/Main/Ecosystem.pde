@@ -49,11 +49,11 @@ class Ecosystem {
       w.add(new Whale());
     }
 
-    fishingLevel = 1;
+    fishingLevel = 0;
 
-    temperatureLevel = 1;
+    temperatureLevel = 0;
 
-    pollutionLevel = 1;
+    pollutionLevel = 0;
 
     plasticIsland = new PlasticIsland();
   }
@@ -114,25 +114,30 @@ class Ecosystem {
   void showIsland() {
     plasticIsland.buildIsland();
     switch(pollutionLevel) {
-    case 1:
+    case 0:
       plasticIsland.addPlastic(0);
       plasticIsland.removePlastic(plasticIsland.maxSize);
+      //newFrameCount = 0;
+      break;
+    case 1:
+      plasticIsland.addPlastic(plasticIsland.maxSize*.1);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.9);
       break;
     case 2:
-      plasticIsland.addPlastic(plasticIsland.maxSize*.2);
-      plasticIsland.removePlastic(plasticIsland.maxSize*.8);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.22);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.78);
       break;
     case 3:
-      plasticIsland.addPlastic(plasticIsland.maxSize*.4);
-      plasticIsland.removePlastic(plasticIsland.maxSize*.6);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.44);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.56);
       break;
     case 4:
-      plasticIsland.addPlastic(plasticIsland.maxSize*.6);
-      plasticIsland.removePlastic(plasticIsland.maxSize*.4);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.56);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.44);
       break;
     case 5:
-      plasticIsland.addPlastic(plasticIsland.maxSize*.8);
-      plasticIsland.removePlastic(plasticIsland.maxSize*.2);
+      plasticIsland.addPlastic(plasticIsland.maxSize*.78);
+      plasticIsland.removePlastic(plasticIsland.maxSize*.22);
       break;
     case 6:
       plasticIsland.addPlastic(plasticIsland.maxSize);
@@ -142,9 +147,9 @@ class Ecosystem {
   }
 
   void bg() {
-    background(7 + 6*(temperatureLevel-1), 20 - 2*(temperatureLevel-1), 35 - 6*(temperatureLevel-1));
+    background(42 + 2*(temperatureLevel-1), 43 - 2*(temperatureLevel-1), 74 - 2*(temperatureLevel-1));
   }
-  
+
   /**
    Method to change temperature:
    **/
@@ -153,18 +158,55 @@ class Ecosystem {
     this.temperatureLevel = newTemperature;
     for (Mackerel ma : m) {
       ma.maxSpeed = ma.baseSpeed + newTemperature - 1;
-      ma.cohesionValue = newTemperature == 1 ? ma.cohesionBase : ma.cohesionBase/newTemperature*0.2;
+      switch(newTemperature) {
+      case 1:
+        ma.cohesionValue = .5;
+        break;
+      case 2:
+        ma.cohesionValue = .55;
+        break;
+      case 3:
+        ma.cohesionValue = .6;
+        break;
+      case 4:
+        ma.cohesionValue = .65;
+        break;
+      case 5:
+        ma.cohesionValue = .7;
+        break;
+      case 6:
+        ma.cohesionValue = .75;
+        break;
+      }
     }
     for (Tuna tu : t) {
       tu.maxSpeed = tu.baseSpeed + newTemperature - 1;
-      tu.cohesionValue = tu.cohesionBase/newTemperature*0.2;
+      switch(newTemperature) {
+      case 1:
+        tu.cohesionValue = .25;
+        break;
+      case 2:
+        tu.cohesionValue = .3;
+        break;
+      case 3:
+        tu.cohesionValue = .35;
+        break;
+      case 4:
+        tu.cohesionValue = .4;
+        break;
+      case 5:
+        tu.cohesionValue = .45;
+        break;
+      case 6:
+        tu.cohesionValue = .5;
+        break;
+      }
     }
     for (Whale wh : w) {
-      wh.maxSpeed = wh.baseSpeed + newTemperature - 1;
-      wh.cohesionValue = wh.cohesionBase/newTemperature*0.2;
+      wh.maxSpeed = wh.baseSpeed*.6 + newTemperature - 1;
     }
   }
-  
+
   /**
    Method to change pollution:
    **/
