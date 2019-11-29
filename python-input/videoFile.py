@@ -2,17 +2,9 @@
 import cv2
 import numpy as np
 from die import Die
-import communication as server
 
-# Load the image and process it for the CV to have it easier to analyse
-# add "vid.mp4" to use test video
-#Add 0 for using the videofeed.
 video = cv2.VideoCapture(0)
-
-# Set up an array for the Die objects
 dice = []
-currentFrame = 0
-server.setup()
 
 # Trackbar windows to figure out the thresholds and stuff
 #region
@@ -20,20 +12,40 @@ server.setup()
 def nothing(x):
     pass
 
+def TB(name, window, convert=False):
+    windowName = "Dice" if window == 1 else "Dots"
+    if convert == True:
+        return colorConv(cv2.getTrackbarPos(name, windowName), name[-1])
+    else:
+        return cv2.getTrackbarPos(name, windowName)
 
-cv2.namedWindow("Trackbars")
-cv2.resizeWindow("Trackbars", 500, 500)
-cv2.createTrackbar("L-H", "Trackbars", 100, 180, nothing)
-cv2.createTrackbar("L-S", "Trackbars", 49, 255, nothing)
-cv2.createTrackbar("L-V", "Trackbars", 0, 255, nothing)
-cv2.createTrackbar("U-H", "Trackbars", 130, 180, nothing)
-cv2.createTrackbar("U-S", "Trackbars", 175, 255, nothing)
-cv2.createTrackbar("U-V", "Trackbars", 60, 255, nothing)
-cv2.createTrackbar("Epsilon", "Trackbars", 16, 500, nothing)
-cv2.createTrackbar("Dilate", "Trackbars", 10, 50, nothing)
-cv2.createTrackbar("Erode", "Trackbars", 0, 50, nothing)
-cv2.createTrackbar("Dilate-dot", "Trackbars", 5, 50, nothing)
-cv2.createTrackbar("Erode-dot", "Trackbars", 1, 50, nothing)
+def colorConv(value, param):
+    ratio = 0.5 if param == "H" else 2.55
+    return value*ratio
+
+cv2.namedWindow("Dice")
+cv2.resizeWindow("Dice", 500, 600)
+cv2.createTrackbar("L-H", "Dice", 100, 360, nothing)
+cv2.createTrackbar("L-S", "Dice", 49, 100, nothing)
+cv2.createTrackbar("L-V", "Dice", 0, 100, nothing)
+cv2.createTrackbar("U-H", "Dice", 130, 360, nothing)
+cv2.createTrackbar("U-S", "Dice", 100, 100, nothing)
+cv2.createTrackbar("U-V", "Dice", 60, 100, nothing)
+cv2.createTrackbar("Epsilon", "Dice", 16, 500, nothing)
+cv2.createTrackbar("Dilate", "Dice", 10, 50, nothing)
+cv2.createTrackbar("Erode", "Dice", 0, 50, nothing)
+cv2.createTrackbar("Open/Close", "Dice", 0, 1, nothing)
+cv2.createTrackbar("BL-D", "Dice", 40, 100, nothing)
+cv2.createTrackbar("BL-sColor", "Dice", 100, 200, nothing)
+cv2.createTrackbar("BL-sSpace", "Dice", 100, 200, nothing)
+
+cv2.namedWindow("Dots")
+cv2.resizeWindow("Dots", 500, 200)
+cv2.createTrackbar("Epsilon", "Dots", 16, 500, nothing)
+cv2.createTrackbar("Dilate", "Dots", 5, 50, nothing)
+cv2.createTrackbar("Erode", "Dots", 1, 50, nothing)
+cv2.createTrackbar("Open/Close", "Dots", 0, 1, nothing)
+cv2.createTrackbar("Blur", "Dots", 2, 16, nothing)
 #endregion
 
 maskDice = None
@@ -41,54 +53,67 @@ maskDots = None
 
 # Output
 while True:
-    # Read the video and convert the value system to Hue-Sat-Val
     _, frame = video.read()
-    #if currentFrame % 15 == 0:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+    #IMAGE PROCESSING DICE
     #region
-    # Apply thresholds from the Trackbars
     lower_threshold = np.array(
-        [cv2.getTrackbarPos("L-H", "Trackbars"),
-         cv2.getTrackbarPos("L-S", "Trackbars"),
-         cv2.getTrackbarPos("L-V", "Trackbars")])
+        [TB("L-H", 1, True),
+         TB("L-S", 1, True),
+         TB("L-V", 1, True)])
     upper_threshold = np.array(
-        [cv2.getTrackbarPos("U-H", "Trackbars"),
-         cv2.getTrackbarPos("U-S", "Trackbars"),
-         cv2.getTrackbarPos("U-V", "Trackbars")])
+        [TB("U-H", 1, True),
+         TB("U-S", 1, True),
+         TB("U-V", 1, True)])
 
     maskDice = cv2.inRange(hsv, lower_threshold, upper_threshold)
-    maskDice = cv2.bilateralFilter(maskDice, 40, 100, 100)
-    maskDots = maskDice
-    kernelSizeErodeDice = cv2.getTrackbarPos("Erode", "Trackbars")
-    kernelSizeDilateDice = cv2.getTrackbarPos("Dilate", "Trackbars")
-    maskDice = cv2.erode(maskDice, np.ones(
-        (kernelSizeErodeDice, kernelSizeErodeDice), np.uint8))
-    maskDice = cv2.dilate(maskDice, np.ones(
-        (kernelSizeDilateDice, kernelSizeDilateDice), np.uint8))
+    maskDice = cv2.bilateralFilter(maskDice, TB("BL-D", 1), TB("BL-sColor", 1), TB("BL-sSpace", 1))
 
-    # Alternative image processing with dots
-    # maskDots = maskDice
-    maskDots = cv2.blur(maskDots, (2, 2))
+    if TB("Open/Close", 1) == 0:
+        maskDice = cv2.erode(maskDice, np.ones((TB("Erode", 1), TB("Erode", 1)), np.uint8))
+        maskDice = cv2.dilate(maskDice, np.ones((TB("Dilate", 1), TB("Dilate", 1)), np.uint8))
+    elif TB("Open/Close", 1) == 1:
+        maskDice = cv2.dilate(maskDice, np.ones((TB("Dilate", 1), TB("Dilate", 1)), np.uint8))
+        maskDice = cv2.erode(maskDice, np.ones((TB("Erode", 1), TB("Erode", 1)), np.uint8))
+    #endregion
+
+    #IMAGE PROCESSING DOTS
+    #region
+    lower_threshold = np.array(
+        [TB("L-H", 1),
+         TB("L-S", 1),
+         TB("L-V", 1)])
+    upper_threshold = np.array(
+        [TB("U-H", 1),
+         TB("U-S", 1),
+         TB("U-V", 1)])
+
+    maskDots = cv2.inRange(hsv, lower_threshold, upper_threshold)
+    #maskDots = cv2.bilateralFilter(maskDots, TB("BL-D", 2), TB("BL-sColor", 2), TB("BL-sSpace", 2))
+    try:
+        maskDots = cv2.blur(maskDots, (TB("Blur", 2), TB("Blur", 2)))
+    except:
+        maskDots = cv2.blur(maskDots, (2, 2))
+
     _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-    kernelSizeErodeDots = cv2.getTrackbarPos("Erode-dot", "Trackbars")
-    kernelSizeDilateDots = cv2.getTrackbarPos("Dilate-dot", "Trackbars")
-    maskDots = cv2.erode(maskDots, np.ones(
-        (kernelSizeErodeDots, kernelSizeErodeDots), np.uint8))
-    maskDots = cv2.dilate(maskDots, np.ones(
-        (kernelSizeDilateDots, kernelSizeDilateDots), np.uint8))
+    
+    if TB("Open/Close", 2) == 0:
+        maskDots = cv2.erode(maskDots, np.ones((TB("Erode", 2), TB("Erode", 2)), np.uint8))
+        maskDots = cv2.dilate(maskDots, np.ones((TB("Dilate", 2), TB("Dilate", 2)), np.uint8))
+    elif TB("Open/Close", 2) == 1:
+        maskDots = cv2.dilate(maskDots, np.ones((TB("Dilate", 2), TB("Dilate", 2)), np.uint8))
+        maskDots = cv2.erode(maskDots, np.ones((TB("Erode", 2), TB("Erode", 2)), np.uint8))
     #endregion
 
     # Find contours and draw them
-    # Dice
-    #region
+    #region Dice
     contours, _ = cv2.findContours(
         maskDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     dice = []
     for c in contours:
-        approx = cv2.approxPolyDP(
-            c, cv2.getTrackbarPos("Epsilon", "Trackbars"), True)
+        approx = cv2.approxPolyDP(c, TB("Epsilon", 1), True)
         if len(approx) == 4:
             coords = [a[0] for a in approx]
             d = Die(coords, 0)
@@ -104,13 +129,12 @@ while True:
             cv2.circle(frame, tuple(d.roundedCenter), int(
                 d.maxCenterDistance), (255, 255, 255), 3)
     #endregion
-    # Dots
-    #region
+    #region Dots
     contours, _ = cv2.findContours(
         maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     for c in contours:
-        approx = cv2.approxPolyDP(c, 1, False)
+        approx = cv2.approxPolyDP(c, TB("Epsilon", 2), True)
         if len(approx) >= 4:
             x, y, w, h = cv2.boundingRect(approx)
             x2 = x + w
@@ -131,13 +155,11 @@ while True:
             d.dots = d.dots -1
 
     data = ', '.join([d.color + ": " + str(d.dots) for d in dice])
-    server.send(data)
     #endregion
 
     dicePoints = ', '.join([str(d.dots) for d in dice])
     cv2.putText(frame, dicePoints, (50, 100),
                 cv2.FONT_HERSHEY_COMPLEX, 2, (255, 255, 255), 3)
-    currentFrame += 1
 
     # Draw the frames
     cv2.namedWindow("Analysed", 0)
@@ -153,7 +175,16 @@ while True:
     key = cv2.waitKey(1)
     if key == 27:
         break
+    elif key == 8:
+        rawInput = input("Enter values as (Hue, Saturation, Value)")
+        splitInput = rawInput.split(",")
+        splitInput = [int(a) for a in splitInput]
+        cv2.setTrackbarPos("L-H", "Dice", splitInput[0]-20 if splitInput[0] > 20 else 0)
+        cv2.setTrackbarPos("U-H", "Dice", splitInput[0]+20 if splitInput[0] < 340 else 360)
+        cv2.setTrackbarPos("L-S", "Dice", splitInput[1]-40 if splitInput[1] > 40 else 0)
+        cv2.setTrackbarPos("U-S", "Dice", splitInput[1]+40 if splitInput[1] < 60 else 100)
+        cv2.setTrackbarPos("L-V", "Dice", splitInput[2]-20 if splitInput[2] > 20 else 0)
+        cv2.setTrackbarPos("U-V", "Dice", splitInput[2]+20 if splitInput[2] < 80 else 100)
 
 video.release()
 cv2.destroyAllWindows()
-server.end()
