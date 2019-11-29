@@ -14,34 +14,43 @@ values = [1, 1, 1]
 currentFrame = 0
 server.setup()
 
-blue = {"lower_threshold" : [100, 160, 0],
-        "upper_threshold" : [130, 255, 110],
-        "bilateral" : (40, 100, 100),
-        "dice_erode" : (1, 1),
-        "dice_dilate" : (7, 7),
-        "dot_dilate" : (5, 5),
-        "dot_erode" : (1, 7),
-        "dice_epsilon" : 20,
+def hc(inputNum):
+    return inputNum/2
+
+def svc(inputNum):
+    return inputNum/100*255 
+
+blue = {"lower_threshold" : [hc(207), svc(21), svc(0)],
+        "upper_threshold" : [hc(247), svc(100), svc(35)],
+        "bilateral" : (15, 140, 100),
+        "dice_erode" : (3, 3),
+        "dice_dilate" : (19, 19),
+        "dot_dilate" : (9, 9),
+        "dot_erode" : (2, 2),
+        "dice_epsilon" : 25,
+        "dot_blur": (5, 5),
         "color" : "blue",
         "value" : 1}
-red = {"lower_threshold": [0, 135, 80],
-        "upper_threshold": [15, 250, 220],
-        "bilateral": (20, 75, 75),
-        "dice_erode": (0, 0),
-        "dice_dilate": (24, 24),
-        "dot_dilate": (8, 8),
-        "dot_erode": (0, 0),
-        "dice_epsilon": 23,
+red = {"lower_threshold": [hc(0), svc(65), svc(30)],
+        "upper_threshold": [hc(29), svc(100), svc(80)],
+        "bilateral": (15, 140, 100),
+        "dice_erode": (3, 3),
+        "dice_dilate": (19, 19),
+        "dot_dilate": (9, 9),
+        "dot_erode": (2, 2),
+        "dice_epsilon": 25,
+        "dot_blur": (5, 5),
         "color" : "red",
         "value" : 1}
-green = {"lower_threshold" : [38, 90, 30],
-        "upper_threshold" : [86, 198, 80],
-        "bilateral" : (20, 75, 75),
-        "dice_erode" : (0, 0),
-        "dice_dilate" : (24, 24),
-        "dot_dilate" : (7, 7),
-        "dot_erode" : (1, 1),
-        "dice_epsilon" : 21,
+green = {"lower_threshold" : [hc(105), svc(20), svc(8)],
+        "upper_threshold" : [hc(185), svc(75), svc(60)],
+        "bilateral" : (15, 140, 100),
+        "dice_erode" : (3, 3),
+        "dice_dilate" : (19, 19),
+        "dot_dilate" : (9, 9),
+        "dot_erode" : (2, 2),
+        "dice_epsilon" : 25,
+        "dot_blur" : (5, 5),
         "color" : "green",
         "value" : 1}
 
@@ -67,10 +76,10 @@ while True:
             maskDice = cv2.dilate(maskDice, np.ones(hue["dice_dilate"], np.uint8))
 
             # Alternative image processing with dots
-            maskDots = cv2.blur(maskDots, (2, 2))
+            maskDots = cv2.blur(maskDots, hue["dot_blur"])
             _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-            maskDots = cv2.dilate(maskDots, np.ones(hue["dot_dilate"], np.uint8))
             maskDots = cv2.erode(maskDots, np.ones(hue["dot_erode"], np.uint8))
+            maskDots = cv2.dilate(maskDots, np.ones(hue["dot_dilate"], np.uint8))
             #endregion
 
             # Find contours and draw them

@@ -1,0 +1,75 @@
+----------
+29/11/2019, 12:56:21 // 6cm, 4ply filter
+Green
+Dice:
+L-H: 105
+L-S: 20
+L-V: 8
+U-H: 185
+U-S: 75
+U-V: 60
+Epsilon: 25
+Dilate: 19
+Erode: 3
+Open/Close: 1
+BL-D: 15
+BL-sColor: 140
+BL-sSpace: 100
+
+Dots:
+Epsilon: 1
+Dilate: 9
+Erode: 2
+Open/Close: 1
+Blur: 5
+Treshold: 75
+----------
+29/11/2019, 12:58:55
+Blue
+Dice:
+L-H: 207
+L-S: 21
+L-V: 0
+U-H: 247
+U-S: 100
+U-V: 35
+Epsilon: 25
+Dilate: 19
+Erode: 3
+Open/Close: 1
+BL-D: 15
+BL-sColor: 140
+BL-sSpace: 99
+
+Dots:
+Epsilon: 1
+Dilate: 9
+Erode: 2
+Open/Close: 1
+Blur: 5
+Treshold: 75
+----------
+29/11/2019, 13:01:11
+Red
+Dice:
+L-H: 0
+L-S: 65
+L-V: 30
+U-H: 29
+U-S: 100
+U-V: 80
+Epsilon: 25
+Dilate: 19
+Erode: 3
+Open/Close: 1
+BL-D: 15
+BL-sColor: 140
+BL-sSpace: 99
+
+Dots:
+Epsilon: 1
+Dilate: 9
+Erode: 2
+Open/Close: 1
+Blur: 5
+Treshold: 75
