@@ -7,17 +7,19 @@ class Tuna {
   private boolean isAlive;
   private int frameCountWhenKilled;
   private int FRAMES_NEEDED_TO_RESSURECT = 200;
-  int maxSpeed, baseSpeed;
+  float maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .3;
-  float cohesionValue = .3;
-  float cohesionBase = .3;
+  float cohesionValue = .2;
+  float cohesionBase = .2;
   float seperationValue = .5;
   
   float alpha;
+  
+  color c;
 
   Tuna() {
     this.position = new PVector(random(width), random(height));
@@ -32,6 +34,8 @@ class Tuna {
     isAlive = true;
     frameCountWhenKilled = 0;
     alpha = 255;
+    c = color(127, 166, 150);
+    
   }
 
   void edges() {
@@ -208,7 +212,7 @@ class Tuna {
         alpha++;
       }
     }
-    fill(0, 40, 150, alpha);
+    fill(c, alpha);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
     //noFill();

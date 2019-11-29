@@ -6,8 +6,9 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  size(1920, 1080);
-  //fullScreen(P2D);
+  size(1360, 768);
+  //fullScreen(P2D, 1);
+  frameRate(24);
 
   myClient = new Client(this, "127.0.0.1", 1234);
 
@@ -20,7 +21,7 @@ void draw() {
     input = myClient.readString();
     inputInt = int(split(input, ", "));
   }
-  if (oldInput != input){
+  if (oldInput != input) {
     println(input);
   }
   e.bg();
@@ -92,34 +93,35 @@ void draw() {
     }
   }
 }
+// keyboard interface for debuging
+
+
+void keyPressed() {
+  switch(key) {
+  case '1':
+    e.changeTemperature(1);
+    break;
+  case '2':
+    e.changeTemperature(2);
+    break;
+  case '3':
+    e.changeTemperature(3);
+    break;
+  case '4':
+    e.changeTemperature(4);
+    break;
+  case '5':
+    e.changeTemperature(5);
+    break;
+  case '6':
+    e.changeTemperature(6);
+    break;
+  }
+}
 
 /*
 void keyPressed() {
- switch(key){
- case '1':
- e.changeTemperature(1);
- break;
- case '2':
- e.changeTemperature(2);
- break;
- case '3':
- e.changeTemperature(3);
- break;
- case '4':
- e.changeTemperature(4);
- break;
- case '5':
- e.changeTemperature(5);
- break;
- case '6':
- e.changeTemperature(6);
- break;
- }
- }
- */
-/*
-void keyPressed() {
- switch(key){
+ switch(key) {
  case '1':
  e.changePollution(1);
  break;
