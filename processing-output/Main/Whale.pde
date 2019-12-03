@@ -12,7 +12,7 @@ class Whale {
   float cohesionValue = .1;
   float cohesionBase = .1;
   float seperationValue = .45;
-  
+
   color c;
 
   Whale() {
@@ -21,10 +21,10 @@ class Whale {
     this.velocity.setMag(random(1, 2));
     this.acceleration = new PVector();
     this.maxForce = 2;
-    this.maxSpeed = 3;
-    this.baseSpeed = 2;
+    this.maxSpeed = 4;
+    this.baseSpeed = 4;
     history = new ArrayList<PVector>();
-    trailSize = 25;
+    trailSize = 18;
     c = color(246, 134, 104);
   }
 
@@ -70,6 +70,27 @@ class Whale {
           total++;
         }
       }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+
+  void avoidIsland() {
+    int perceptionRadius = 350;
+    PVector steering = new PVector();
+    int total = 0;
+    PVector island = new PVector(width/2, height+50);
+    float d = dist(this.position.x, this.position.y, island.x, island.y);
+    if (d < perceptionRadius) {
+      PVector diff = PVector.sub(this.position, island);
+      diff.div(d * d);
+      steering.add(diff);
+      total++;
     }
     if (total > 0) {
       steering.div(total);
@@ -175,7 +196,7 @@ class Whale {
 
   void show() {
     noStroke();
-    fill(c);
+    fill(29);
     ellipse(this.position.x, this.position.y, 35, 35);
     beginShape();
     //noFill();
@@ -186,5 +207,7 @@ class Whale {
       //vertex(pos.x, pos.y);
     }
     endShape();
+    fill(222);
+    ellipse(this.position.x, this.position.y, 15, 15);
   }
 }

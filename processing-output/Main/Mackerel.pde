@@ -79,6 +79,27 @@ class Mackerel {
     }
     this.applyForce(steering);
   }
+  
+  void avoidIsland() {
+    int perceptionRadius = 350;
+    PVector steering = new PVector();
+    int total = 0;
+    PVector island = new PVector(width/2, height+50);
+    float d = dist(this.position.x, this.position.y, island.x, island.y);
+    if (d < perceptionRadius) {
+      PVector diff = PVector.sub(this.position, island);
+      diff.div(d * d);
+      steering.add(diff);
+      total++;
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
 
   void avoidWhales(ArrayList<Whale> wh) {
     int perceptionRadius = 80;

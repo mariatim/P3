@@ -14,7 +14,7 @@ class Plastic {
     this.acceleration = new PVector();
     r = int(random(12, 12));
     alpha = 0;
-    isAlive = true;
+    isAlive = false;
     
     c = color(255, 36, 81);
   }

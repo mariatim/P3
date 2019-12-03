@@ -11,22 +11,32 @@ class Ecosystem {
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
 
-  private int MIN_TEMP_VALUE = 1;
+  private int MIN_TEMP_VALUE = 0;
   private int MAX_TEMP_VALUE = 6;
 
   private int temperatureLevel;
 
-  private int MIN_DIE_VALUE = 1;
+  private int MIN_DIE_VALUE = 0;
   private int MAX_DIE_VALUE = 6;
 
   private int fishingLevel;
 
-  private int MIN_POL_VALUE = 1;
+  private int MIN_POL_VALUE = 0;
   private int MAX_POL_VALUE = 6;
 
   private int pollutionLevel;
 
   PlasticIsland plasticIsland;
+
+  boolean islandAlive = false;
+
+  int r = 42;
+  int g = 43;
+  int b = 74;
+
+  int bgR = r;
+  int bgG = g;
+  int bgB = b;
 
   Ecosystem() {
     m = new ArrayList<Mackerel>();
@@ -78,6 +88,7 @@ class Ecosystem {
     for (Mackerel ma : m) {
       ma.edges();
       ma.avoidPollution(plasticIsland.pl);
+      ma.avoidIsland();
       ma.avoidWhales(w);
       ma.avoidTuna(t);
       ma.update();
@@ -91,6 +102,7 @@ class Ecosystem {
       if (tu.isAlive()) {
         tu.edges();
         tu.avoidPollution(plasticIsland.pl);
+        tu.avoidIsland();
         tu.avoidWhales(w);
         tu.update();
         tu.flock(t);
@@ -105,6 +117,7 @@ class Ecosystem {
     for (Whale wh : w) {
       wh.edges();
       wh.avoidPollution(plasticIsland.pl);
+      wh.avoidIsland();
       wh.update();
       wh.flock(w);
       wh.show();
@@ -117,7 +130,10 @@ class Ecosystem {
     case 0:
       plasticIsland.addPlastic(0);
       plasticIsland.removePlastic(plasticIsland.maxSize);
-      //newFrameCount = 0;
+      if (!islandAlive && plasticIsland.pl.get(0).alpha <= 0) {
+        plasticIsland = new PlasticIsland();
+        islandAlive = true;
+      }
       break;
     case 1:
       plasticIsland.addPlastic(plasticIsland.maxSize*.1);
@@ -147,7 +163,132 @@ class Ecosystem {
   }
 
   void bg() {
-    background(42 + 2*(temperatureLevel-1), 43 - 2*(temperatureLevel-1), 74 - 2*(temperatureLevel-1));
+    int colorChange = 2*(temperatureLevel);
+    if (frameCount % 5 == 0) {
+      switch(temperatureLevel) {
+      case 0:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 1:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 2:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 3:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 4:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 5:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 6:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      }
+    }
+    //println(bgR, bgG, bgB);
+    background(bgR, bgG, bgB);
   }
 
   /**
@@ -157,8 +298,11 @@ class Ecosystem {
   void changeTemperature(int newTemperature) {
     this.temperatureLevel = newTemperature;
     for (Mackerel ma : m) {
-      ma.maxSpeed = ma.baseSpeed + newTemperature - 1;
+      ma.maxSpeed = ma.baseSpeed + newTemperature;
       switch(newTemperature) {
+      case 0:
+        ma.cohesionValue = .45;
+        break;
       case 1:
         ma.cohesionValue = .5;
         break;
@@ -180,8 +324,11 @@ class Ecosystem {
       }
     }
     for (Tuna tu : t) {
-      tu.maxSpeed = tu.baseSpeed + newTemperature - 1;
+      tu.maxSpeed = tu.baseSpeed + newTemperature;
       switch(newTemperature) {
+      case 0:
+        tu.cohesionValue = .2;
+        break;
       case 1:
         tu.cohesionValue = .25;
         break;
@@ -203,7 +350,7 @@ class Ecosystem {
       }
     }
     for (Whale wh : w) {
-      wh.maxSpeed = wh.baseSpeed + newTemperature - 1;
+      wh.maxSpeed = wh.baseSpeed + newTemperature;
     }
   }
 
@@ -214,6 +361,7 @@ class Ecosystem {
   void changePollution(int newPollutionLevel) {
     if ((newPollutionLevel >= MIN_DIE_VALUE) && (newPollutionLevel <= MAX_DIE_VALUE) && (newPollutionLevel != pollutionLevel)) {
       this.pollutionLevel = newPollutionLevel;
+      islandAlive = false;
     }
   }
 
