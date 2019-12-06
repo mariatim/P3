@@ -25,7 +25,7 @@ class Whale {
     this.baseSpeed = 4;
     history = new ArrayList<PVector>();
     trailSize = 18;
-    c = color(246, 134, 104);
+    c = color_orca1;
   }
 
   void edges() {
@@ -207,7 +207,7 @@ class Whale {
       //vertex(pos.x, pos.y);
     }
     endShape();
-    fill(222);
+    fill(color_orca2);
     ellipse(this.position.x, this.position.y, 15, 15);
   }
 }
