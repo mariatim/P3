@@ -141,11 +141,8 @@ void applyColorScheme6() {
 
   color_background = color(28, 11, 46);
 
-color_orca1 = color(#336DE3);
-color_orca2 = color(#1C0B2E);
-
-  color_orca1 = color(0);
-  color_orca2 = color(#C4C4C2);
+  color_orca1 = color(#336DE3);
+  color_orca2 = color(#1C0B2E);
 
   color_tuna = color(#38BAF4);
 

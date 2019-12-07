@@ -21,7 +21,7 @@ class Plastic {
 
   void show() {
     if (isAlive) {
-      if (frameCount%2 == 0 && this.alpha < 180) {
+      if (frameCount%2 == 0 && this.alpha < 150) {
         this.alpha++;
       }
     } else if (!isAlive) {

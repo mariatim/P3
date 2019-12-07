@@ -6,7 +6,7 @@ class Tuna {
 
   private boolean isAlive;
   private int frameCountWhenKilled;
-  private int FRAMES_NEEDED_TO_RESSURECT = 200;
+  private int FRAMES_NEEDED_TO_RESSURECT = 150;
   boolean caught;
 
   float maxSpeed, baseSpeed;
@@ -101,14 +101,12 @@ class Tuna {
     float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
     float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
     if (d1 < perceptionRadius) {
-      //ellipse(island1.x, island1.y, perceptionRadius*2, perceptionRadius*2);
       PVector diff = PVector.sub(this.position, island1);
       diff.div(d1 * d1);
       steering.add(diff);
       total++;
     }
     if (d2 < perceptionRadius) {
-      //ellipse(island2.x, island2.y, perceptionRadius*2, perceptionRadius*2);
       PVector diff = PVector.sub(this.position, island2);
       diff.div(d2 * d2);
       steering.add(diff);
@@ -124,17 +122,17 @@ class Tuna {
   }
 
   void getCaught(ArrayList<Hook> hooks) {
-    for (Hook h : hooks) {
-      int perceptionRadius = h.hookRadius;
-      if (h.active == true) {
-        if (dist(position.x, position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= perceptionRadius) {
+    if (!this.caught) {
+      for (Hook h : hooks) {
+        int perceptionRadius = h.hookRadius;
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= perceptionRadius) {
           this.velocity = new PVector(0, 0);
-          this.position = h.currentEndPosition;
+          this.position = h.currentEndPosition.copy();
         }
-        if (dist(position.x, position.y, h.startingPosition.x, h.startingPosition.y) <= 10) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.startingPosition.x, h.startingPosition.y) <= 10) {
           this.kill();
-          this.caught = true;
           this.position = new PVector(random(width), random(height));
+          this.caught = true;
         }
       }
     }
@@ -298,7 +296,7 @@ class Tuna {
   public void tryToRessurect() {
     if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
       this.caught = false;
-      ressurect();
+      this.ressurect();
     }
   }
 }
