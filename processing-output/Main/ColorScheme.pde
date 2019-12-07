@@ -141,10 +141,8 @@ void applyColorScheme6() {
 
   color_background = color(28, 11, 46);
 
-  color_plankton1 = color(183, 63, 47);
-  color_plankton2 = color(72, 134, 145);
-  color_plankton3 = color(203, 198, 169);
-  color_plankton4 = color(108, 169, 136);
+color_orca1 = color(#336DE3);
+color_orca2 = color(#1C0B2E);
 
   color_orca1 = color(0);
   color_orca2 = color(#C4C4C2);
