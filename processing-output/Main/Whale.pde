@@ -196,7 +196,7 @@ class Whale {
 
   void show() {
     noStroke();
-    fill(29);
+    fill(c);
     ellipse(this.position.x, this.position.y, 35, 35);
     beginShape();
     //noFill();
