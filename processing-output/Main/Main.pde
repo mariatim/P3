@@ -18,6 +18,7 @@ Ecosystem e;
 
 void setup() {
   size(1360, 768);
+  applyColorScheme6();
   //fullScreen(P2D, 1);
   frameRate(24);
 

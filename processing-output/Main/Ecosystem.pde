@@ -30,9 +30,9 @@ class Ecosystem {
 
   boolean islandAlive = false;
 
-  int r = 21;
-  int g = 37;
-  int b = 56;
+  int r = color_r;
+  int g = color_g;
+  int b = color_b;
 
   int bgR = r;
   int bgG = g;
