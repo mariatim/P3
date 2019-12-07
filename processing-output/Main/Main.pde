@@ -17,8 +17,9 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  //size(1360, 768);
-  fullScreen(P2D, 2);
+  size(1360, 768);
+  applyColorScheme6();
+  //fullScreen(P2D, 1);
   frameRate(24);
 
   myClient = new Client(this, "127.0.0.1", 1234);

@@ -37,7 +37,7 @@ class Tuna {
     caught = false;
     frameCountWhenKilled = 0;
     alpha = 255;
-    c = color(127, 166, 150);
+    c = color_tuna;
   }
 
   void edges() {

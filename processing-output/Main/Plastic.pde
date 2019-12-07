@@ -16,7 +16,7 @@ class Plastic {
     alpha = 0;
     isAlive = false;
     
-    c = color(255, 36, 81);
+    c = color_plastic;
   }
 
 

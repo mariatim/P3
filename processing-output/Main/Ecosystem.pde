@@ -30,13 +30,12 @@ class Ecosystem {
 
   boolean islandAlive = false;
 
+  int r = color_r;
+  int g = color_g;
+  int b = color_b;
   ArrayList<Hook> hooks;
 
   int numberOfHooks = 6;
-
-  int r = 42;
-  int g = 43;
-  int b = 74;
 
   int bgR = r;
   int bgG = g;

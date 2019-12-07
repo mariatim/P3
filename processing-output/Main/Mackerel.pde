@@ -24,8 +24,7 @@ class Mackerel {
     this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
-
-    c = color(186, 118, 112);
+    c = color_mackerel;
   }
 
   void edges() {
