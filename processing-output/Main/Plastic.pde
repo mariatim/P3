@@ -19,8 +19,6 @@ class Plastic {
     c = color_plastic;
   }
 
-
-
   void show() {
     if (isAlive) {
       if (frameCount%2 == 0 && this.alpha < 180) {

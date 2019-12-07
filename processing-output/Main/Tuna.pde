@@ -96,11 +96,21 @@ class Tuna {
     int perceptionRadius = 200;
     PVector steering = new PVector();
     int total = 0;
-    PVector island = new PVector(width/2, height+50);
-    float d = dist(this.position.x, this.position.y, island.x, island.y);
-    if (d < perceptionRadius) {
-      PVector diff = PVector.sub(this.position, island);
-      diff.div(d * d);
+    PVector island1 = new PVector(3.5*width/8, height+50);
+    PVector island2 = new PVector(2.85*width/4, height+150);
+    float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
+    float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
+    if (d1 < perceptionRadius) {
+      //ellipse(island1.x, island1.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island1);
+      diff.div(d1 * d1);
+      steering.add(diff);
+      total++;
+    }
+    if (d2 < perceptionRadius) {
+      //ellipse(island2.x, island2.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island2);
+      diff.div(d2 * d2);
       steering.add(diff);
       total++;
     }
