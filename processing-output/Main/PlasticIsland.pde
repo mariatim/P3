@@ -22,7 +22,6 @@ class PlasticIsland {
     }
   }
 
-
   void removePlastic(float newSize) {
     if (frameCount % 3 == 0) {
       for (int i = pl.size()-1; i >= pl.size()-newSize; i--) {
@@ -30,7 +29,6 @@ class PlasticIsland {
       }
     }
   }
-
 
   void buildIsland() {
     for (Plastic p : pl) {

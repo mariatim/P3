@@ -26,7 +26,7 @@ void setup() {
   
   minim = new Minim(this);
   player = minim.loadFile("ambience.mp3");
-  player.loop();
+  //player.loop();
 
   //ambience = new SoundFile(this, "ambience.aiff");
   //ambience.loop();
@@ -43,7 +43,7 @@ void draw() {
   if (oldInput != input) {
     println(input);
   }
-  e.bg();
+  //e.bg();
   e.display();
   //println(frameRate);
   /*
