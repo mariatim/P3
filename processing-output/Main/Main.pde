@@ -17,15 +17,15 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  size(1360, 768);
-  //fullScreen(P2D, 1);
+  //size(1360, 768);
+  fullScreen(P2D, 2);
   frameRate(24);
 
   myClient = new Client(this, "127.0.0.1", 1234);
   
   minim = new Minim(this);
   player = minim.loadFile("ambience.mp3");
-  player.loop();
+  //player.loop();
 
   //ambience = new SoundFile(this, "ambience.aiff");
   //ambience.loop();
@@ -42,7 +42,7 @@ void draw() {
   if (oldInput != input) {
     println(input);
   }
-  e.bg();
+  //e.bg();
   e.display();
   //println(frameRate);
   /*

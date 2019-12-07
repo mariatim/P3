@@ -30,6 +30,10 @@ class Ecosystem {
 
   boolean islandAlive = false;
 
+  ArrayList<Hook> hooks;
+
+  int numberOfHooks = 6;
+
   int r = 42;
   int g = 43;
   int b = 74;
@@ -66,14 +70,21 @@ class Ecosystem {
     pollutionLevel = 0;
 
     plasticIsland = new PlasticIsland();
+
+    hooks = new ArrayList<Hook>();
+    for (int i = 0; i < numberOfHooks; i++) {
+      hooks.add(new Hook());
+    }
   }
 
   void display() {
+    bg();
     showPlanktons();
     showMackerels();
     showTuna();
     showWhales();
     showIsland();
+    showHooks();
   }
 
   void showPlanktons() {
@@ -98,12 +109,14 @@ class Ecosystem {
   }
 
   void showTuna() {
+    println(t.size());
     for (Tuna tu : t) {
       if (tu.isAlive()) {
         tu.edges();
         tu.avoidPollution(plasticIsland.pl);
         tu.avoidIsland();
         tu.avoidWhales(w);
+        tu.getCaught(hooks);
         tu.update();
         tu.flock(t);
         tu.show();
@@ -121,6 +134,16 @@ class Ecosystem {
       wh.update();
       wh.flock(w);
       wh.show();
+    }
+  }
+
+  void showHooks() {
+    for (Hook h : hooks) {
+      if (h.active) {
+        //h.update();
+        h.catchFish(t);
+        h.show();
+      }
     }
   }
 
@@ -377,19 +400,90 @@ class Ecosystem {
   }
 
   private void fishTuna() {
-    if (fishingLevel==1) {
-      // tuna you are free to live
-    } else if (fishingLevel==2) {
-      fishTuna(getNumberOfLiveTuna()/10);
-    } else if (fishingLevel==3) {
-      fishTuna(getNumberOfLiveTuna()/8);
-    } else if (fishingLevel==4) {
-      fishTuna(getNumberOfLiveTuna()/6);
-    } else if (fishingLevel==5) {
-      fishTuna(getNumberOfLiveTuna()/2);
-    } else if (fishingLevel==6) {
-      fishTuna(getNumberOfLiveTuna()-1);
+    switch(fishingLevel) {
+    case 0:
+      float sum = 0;
+      for (Hook h : hooks) {
+        h.alpha--;
+        sum += h.alpha;
+        if (sum <= 0) {
+          hooks.clear();
+        }
+      }
+      for (int i = 0; i < numberOfHooks; i++) {
+        hooks.add(new Hook());
+      }
+      break;
+    case 1:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 0) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 2:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 1) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 3:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 2) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 4:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 3) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 5:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 4) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 6:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 5) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
     }
+    /*
+    if (fishingLevel==1) {
+     // tuna you are free to live
+     } else if (fishingLevel==2) {
+     fishTuna(getNumberOfLiveTuna()/10);
+     } else if (fishingLevel==3) {
+     fishTuna(getNumberOfLiveTuna()/8);
+     } else if (fishingLevel==4) {
+     fishTuna(getNumberOfLiveTuna()/6);
+     } else if (fishingLevel==5) {
+     fishTuna(getNumberOfLiveTuna()/2);
+     } else if (fishingLevel==6) {
+     fishTuna(getNumberOfLiveTuna()-1);
+     }
+     */
   }
 
   private void fishTuna(int numberOfTunaToFish) {

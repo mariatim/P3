@@ -11,7 +11,7 @@ class Mackerel {
   float cohesionValue = .4;
   float cohesionBase = .4;
   float seperationValue = .8;
-  
+
   color c;
 
   Mackerel() {
@@ -24,7 +24,7 @@ class Mackerel {
     this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
-    
+
     c = color(186, 118, 112);
   }
 
@@ -79,9 +79,9 @@ class Mackerel {
     }
     this.applyForce(steering);
   }
-  
+
   void avoidIsland() {
-    int perceptionRadius = 350;
+    int perceptionRadius = 200;
     PVector steering = new PVector();
     int total = 0;
     PVector island = new PVector(width/2, height+50);
@@ -96,7 +96,7 @@ class Mackerel {
       steering.div(total);
       steering.setMag(this.maxSpeed);
       steering.sub(this.velocity);
-      steering.limit(this.maxForce);
+      steering.limit(this.maxForce*.5);
     }
     this.applyForce(steering);
   }
@@ -128,12 +128,14 @@ class Mackerel {
     PVector steering = new PVector();
     int total = 0;
     for (Tuna other : t) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (d < perceptionRadius) {
-        PVector diff = PVector.sub(this.position, other.position);
-        diff.div(d * d);
-        steering.add(diff);
-        total++;
+      if (other.isAlive) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (d < perceptionRadius) {
+          PVector diff = PVector.sub(this.position, other.position);
+          diff.div(d * d);
+          steering.add(diff);
+          total++;
+        }
       }
     }
     if (total > 0) {
