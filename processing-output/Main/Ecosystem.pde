@@ -11,22 +11,35 @@ class Ecosystem {
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
 
-  private int MIN_TEMP_VALUE = 1;
+  private int MIN_TEMP_VALUE = 0;
   private int MAX_TEMP_VALUE = 6;
 
   private int temperatureLevel;
 
-  private int MIN_DIE_VALUE = 1;
+  private int MIN_DIE_VALUE = 0;
   private int MAX_DIE_VALUE = 6;
 
   private int fishingLevel;
 
-  private int MIN_POL_VALUE = 1;
+  private int MIN_POL_VALUE = 0;
   private int MAX_POL_VALUE = 6;
 
   private int pollutionLevel;
 
   PlasticIsland plasticIsland;
+
+  boolean islandAlive = false;
+
+  int r = color_r;
+  int g = color_g;
+  int b = color_b;
+  ArrayList<Hook> hooks;
+
+  int numberOfHooks = 6;
+
+  int bgR = r;
+  int bgG = g;
+  int bgB = b;
 
   Ecosystem() {
     m = new ArrayList<Mackerel>();
@@ -56,14 +69,21 @@ class Ecosystem {
     pollutionLevel = 0;
 
     plasticIsland = new PlasticIsland();
+
+    hooks = new ArrayList<Hook>();
+    for (int i = 0; i < numberOfHooks; i++) {
+      hooks.add(new Hook());
+    }
   }
 
   void display() {
+    bg();
     showPlanktons();
     showMackerels();
     showTuna();
     showWhales();
     showIsland();
+    showHooks();
   }
 
   void showPlanktons() {
@@ -78,6 +98,7 @@ class Ecosystem {
     for (Mackerel ma : m) {
       ma.edges();
       ma.avoidPollution(plasticIsland.pl);
+      ma.avoidIsland();
       ma.avoidWhales(w);
       ma.avoidTuna(t);
       ma.update();
@@ -87,11 +108,15 @@ class Ecosystem {
   }
 
   void showTuna() {
+    int sum = 0;
     for (Tuna tu : t) {
       if (tu.isAlive()) {
+        sum++;
         tu.edges();
         tu.avoidPollution(plasticIsland.pl);
+        tu.avoidIsland();
         tu.avoidWhales(w);
+        tu.getCaught(hooks);
         tu.update();
         tu.flock(t);
         tu.show();
@@ -99,15 +124,24 @@ class Ecosystem {
         tu.tryToRessurect();
       }
     }
+    println(sum);
   }
 
   void showWhales() {
     for (Whale wh : w) {
       wh.edges();
       wh.avoidPollution(plasticIsland.pl);
+      wh.avoidIsland();
       wh.update();
       wh.flock(w);
       wh.show();
+    }
+  }
+
+  void showHooks() {
+    for (Hook h : hooks) {
+      h.catchFish(t);
+      h.show();
     }
   }
 
@@ -117,7 +151,10 @@ class Ecosystem {
     case 0:
       plasticIsland.addPlastic(0);
       plasticIsland.removePlastic(plasticIsland.maxSize);
-      //newFrameCount = 0;
+      if (!islandAlive && plasticIsland.pl.get(0).alpha <= 0) {
+        plasticIsland = new PlasticIsland();
+        islandAlive = true;
+      }
       break;
     case 1:
       plasticIsland.addPlastic(plasticIsland.maxSize*.1);
@@ -147,7 +184,132 @@ class Ecosystem {
   }
 
   void bg() {
-    background(42 + 2*(temperatureLevel-1), 43 - 2*(temperatureLevel-1), 74 - 2*(temperatureLevel-1));
+    int colorChange = 2*(temperatureLevel);
+    if (frameCount % 5 == 0) {
+      switch(temperatureLevel) {
+      case 0:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 1:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 2:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 3:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 4:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 5:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      case 6:
+        if (bgR <= r+colorChange) {
+          bgR++;
+        } else if (bgR > r+colorChange) {
+          bgR--;
+        }
+        if (bgG <= g-colorChange) {
+          bgG++;
+        } else if (bgG > g-colorChange) {
+          bgG--;
+        }
+        if (bgB <= b-colorChange) {
+          bgB++;
+        } else if (bgB > b-colorChange) {
+          bgB--;
+        }
+        break;
+      }
+    }
+    //println(bgR, bgG, bgB);
+    background(bgR, bgG, bgB);
   }
 
   /**
@@ -157,8 +319,11 @@ class Ecosystem {
   void changeTemperature(int newTemperature) {
     this.temperatureLevel = newTemperature;
     for (Mackerel ma : m) {
-      ma.maxSpeed = ma.baseSpeed + newTemperature - 1;
+      ma.maxSpeed = ma.baseSpeed + newTemperature;
       switch(newTemperature) {
+      case 0:
+        ma.cohesionValue = .45;
+        break;
       case 1:
         ma.cohesionValue = .5;
         break;
@@ -180,8 +345,11 @@ class Ecosystem {
       }
     }
     for (Tuna tu : t) {
-      tu.maxSpeed = tu.baseSpeed + newTemperature - 1;
+      tu.maxSpeed = tu.baseSpeed + newTemperature;
       switch(newTemperature) {
+      case 0:
+        tu.cohesionValue = .2;
+        break;
       case 1:
         tu.cohesionValue = .25;
         break;
@@ -203,7 +371,7 @@ class Ecosystem {
       }
     }
     for (Whale wh : w) {
-      wh.maxSpeed = wh.baseSpeed*.6 + newTemperature - 1;
+      wh.maxSpeed = wh.baseSpeed + newTemperature;
     }
   }
 
@@ -214,6 +382,7 @@ class Ecosystem {
   void changePollution(int newPollutionLevel) {
     if ((newPollutionLevel >= MIN_DIE_VALUE) && (newPollutionLevel <= MAX_DIE_VALUE) && (newPollutionLevel != pollutionLevel)) {
       this.pollutionLevel = newPollutionLevel;
+      islandAlive = false;
     }
   }
 
@@ -229,52 +398,125 @@ class Ecosystem {
   }
 
   private void fishTuna() {
+    switch(fishingLevel) {
+    case 0:
+      for (Hook h : hooks) {
+        h.active = false;
+      }
+      //if (hooks.get(0).alpha <= 0) {
+      //  hooks.clear();
+      //  println("cleared");
+      //  for (int i = 0; i < numberOfHooks; i++) {
+      //    hooks.add(new Hook());
+      //  }
+      //}
+      break;
+    case 1:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 0) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 2:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 1) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 3:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 2) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 4:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 3) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 5:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 4) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    case 6:
+      for (Hook h : hooks) {
+        if (hooks.indexOf(h) <= 5) {
+          h.active = true;
+        } else {
+          h.active = false;
+        }
+      }
+      break;
+    }
+  }
+  /*
     if (fishingLevel==1) {
-      // tuna you are free to live
-    } else if (fishingLevel==2) {
-      fishTuna(getNumberOfLiveTuna()/10);
-    } else if (fishingLevel==3) {
-      fishTuna(getNumberOfLiveTuna()/8);
-    } else if (fishingLevel==4) {
-      fishTuna(getNumberOfLiveTuna()/6);
-    } else if (fishingLevel==5) {
-      fishTuna(getNumberOfLiveTuna()/2);
-    } else if (fishingLevel==6) {
-      fishTuna(getNumberOfLiveTuna()-1);
-    }
-  }
+   // tuna you are free to live
+   } else if (fishingLevel==2) {
+   fishTuna(getNumberOfLiveTuna()/10);
+   } else if (fishingLevel==3) {
+   fishTuna(getNumberOfLiveTuna()/8);
+   } else if (fishingLevel==4) {
+   fishTuna(getNumberOfLiveTuna()/6);
+   } else if (fishingLevel==5) {
+   fishTuna(getNumberOfLiveTuna()/2);
+   } else if (fishingLevel==6) {
+   fishTuna(getNumberOfLiveTuna()-1);
+   }
+   */
 
+
+  /*
   private void fishTuna(int numberOfTunaToFish) {
-
-    if (numberOfTunaToFish >= getNumberOfLiveTuna()) {
-      numberOfTunaToFish = getNumberOfLiveTuna();
-    }
-
-    while (numberOfTunaToFish > 0) {
-      if (getIndexForFirstAliveTuna() == -1) {
-        break;
-      }
-      t.get(getIndexForFirstAliveTuna()).kill();
-      numberOfTunaToFish--;
-    }
-  }
-
-  public int getNumberOfLiveTuna() {
-    int sum = 0;
-    for (int i = 0; i < t.size(); i++) {
-      if (t.get(i).isAlive()) {
-        sum++;
-      }
-    }
-    return sum;
-  }
-
-  private int getIndexForFirstAliveTuna() {
-    for (int i = 0; i < t.size(); i++) {
-      if (t.get(i).isAlive()) {
-        return i;
-      }
-    }
-    return -1;
-  }
+   
+   if (numberOfTunaToFish >= getNumberOfLiveTuna()) {
+   numberOfTunaToFish = getNumberOfLiveTuna();
+   }
+   
+   while (numberOfTunaToFish > 0) {
+   if (getIndexForFirstAliveTuna() == -1) {
+   break;
+   }
+   t.get(getIndexForFirstAliveTuna()).kill();
+   numberOfTunaToFish--;
+   }
+   }
+   
+   public int getNumberOfLiveTuna() {
+   int sum = 0;
+   for (int i = 0; i < t.size(); i++) {
+   if (t.get(i).isAlive()) {
+   sum++;
+   }
+   }
+   return sum;
+   }
+   
+   private int getIndexForFirstAliveTuna() {
+   for (int i = 0; i < t.size(); i++) {
+   if (t.get(i).isAlive()) {
+   return i;
+   }
+   }
+   return -1;
+   }
+   */
 }

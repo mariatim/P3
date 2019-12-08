@@ -18,16 +18,16 @@ class Plankton {
     //int s = int(random(4));
     switch (s) {
     case 0:
-      c = color(113, 152, 112);
+      c = color_plankton1;
       break;
     case 1:
-      c = color(229, 222, 153);
+      c = color_plankton2;
       break;
     case 2:
-      c = color(176, 72, 72);
+      c = color_plankton3;
       break;
     case 3:
-      c = color(255, 255, 255);
+      c = color_plankton4;
       break;
     }
   }
