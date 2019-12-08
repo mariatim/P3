@@ -36,7 +36,7 @@ class Tuna {
     isAlive = true;
     caught = false;
     frameCountWhenKilled = 0;
-    alpha = 255;
+    alpha = 0;
     c = color_tuna;
   }
 
@@ -124,16 +124,19 @@ class Tuna {
   void getCaught(ArrayList<Hook> hooks) {
     if (!this.caught) {
       for (Hook h : hooks) {
-        int perceptionRadius = h.hookRadius;
-        if (h.active == true && dist(this.position.x, this.position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= perceptionRadius) {
-          this.velocity = new PVector(0, 0);
-          this.position = h.currentEndPosition.copy();
-        }
-        if (h.active == true && dist(this.position.x, this.position.y, h.startingPosition.x, h.startingPosition.y) <= 10) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= h.radius) {
           this.kill();
           this.position = new PVector(random(width), random(height));
           this.caught = true;
-        }
+          //this.velocity = new PVector(0, 0);
+          //this.velocity = h.direction.copy();
+          //this.position = h.currentEndPosition.copy();
+        }/*
+        if (h.active == true && dist(this.position.x, this.position.y, h.startingPosition.x, h.startingPosition.y) <= h.radius) {
+          this.kill();
+          this.position = new PVector(random(width), random(height));
+          this.caught = true;
+        }*/
       }
     }
   }
@@ -261,7 +264,7 @@ class Tuna {
   void show() {
     noStroke();
     if (isAlive) {
-      if (/*frameCount%1 == 0 && */alpha <= 255) {
+      if (/*frameCount%1 == 0 && */ this.alpha < 255) {
         alpha++;
       }
     }
@@ -290,6 +293,7 @@ class Tuna {
 
   private void ressurect() {
     isAlive = true;
+    this.position = new PVector(random(width), random(height));
     alpha = 0;
   }
 

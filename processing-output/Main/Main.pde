@@ -17,8 +17,8 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  //size(1360, 768);
-  fullScreen(P2D, 2);
+  size(1360, 768);
+  //fullScreen(P2D, 2);
   frameRate(24);
   applyColorScheme1();
 

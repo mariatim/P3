@@ -8,10 +8,10 @@ class Whale {
   ArrayList<PVector> history;
   int trailSize;
 
-  float alignValue = .8;
+  float alignValue = .4;
   float cohesionValue = .1;
   float cohesionBase = .1;
-  float seperationValue = .45;
+  float seperationValue = .15;
 
   color c;
 
@@ -21,8 +21,8 @@ class Whale {
     this.velocity.setMag(random(1, 2));
     this.acceleration = new PVector();
     this.maxForce = 2;
-    this.maxSpeed = 4;
-    this.baseSpeed = 4;
+    this.maxSpeed = 3;
+    this.baseSpeed = 3;
     history = new ArrayList<PVector>();
     trailSize = 18;
     c = color_orca1;

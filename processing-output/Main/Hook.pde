@@ -2,7 +2,7 @@ class Hook {
   PVector startingPosition;
   PVector currentEndPosition;
   PVector direction;
-  int hookRadius;
+  int radius;
   boolean active;
 
   boolean dir;
@@ -12,7 +12,7 @@ class Hook {
 
   Hook() {
     this.reset();
-    hookRadius = 15;
+    radius = 15;
     active = false;
     dir = true;
     c = color_plastic;
@@ -53,7 +53,7 @@ class Hook {
           this.dir = false;
         } else if (dist(this.currentEndPosition.x, this.currentEndPosition.y, this.startingPosition.x, this.startingPosition.y) <= 10) {
           this.dir = true;
-          direction = new PVector(random(-4, 4), random(-2, -4));
+          this.direction = new PVector(random(-4, 4), random(-2, -4));
         }
       }
     }
