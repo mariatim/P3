@@ -13,7 +13,7 @@ video = cv2.VideoCapture(0)
 dice = []
 values = [0, 0, 0]
 currentFrame = 0
-server.setup()
+#server.setup()
 
 def hc(inputNum):
     return inputNum/2
@@ -21,13 +21,13 @@ def hc(inputNum):
 def svc(inputNum):
     return inputNum/100*255 
 
-blue = {"lower_threshold" : [hc(209), svc(23), svc(8)],
+green = {"lower_threshold" : [hc(209), svc(23), svc(8)],
         "upper_threshold" : [hc(249), svc(100), svc(48)],
         "bilateral" : (5, 40, 45),
         "dice_erode" : (3, 3),
         "dice_dilate" : (20, 20),
-        "dot_dilate" : (7, 7),
-        "dot_erode" : (5, 5),
+        "dot_dilate" : (8, 8),
+        "dot_erode" : (2, 2),
         "dice_epsilon" : 25,
         "color" : "blue",
         "value" : 1}
@@ -37,17 +37,17 @@ red = {"lower_threshold": [hc(0), svc(42), svc(30)],
         "dice_erode": (3, 3),
         "dice_dilate": (20, 20),
         "dot_dilate": (7, 7),
-        "dot_erode": (5, 5),
+        "dot_erode": (3, 3),
         "dice_epsilon": 25,
         "color" : "red",
         "value" : 1}
-green = {"lower_threshold" : [hc(105), svc(20), svc(8)],
+blue = {"lower_threshold" : [hc(105), svc(20), svc(8)],
         "upper_threshold" : [hc(185), svc(75), svc(60)],
         "bilateral" : (5, 40, 45),
         "dice_erode" : (3, 3),
         "dice_dilate" : (20, 20),
-        "dot_dilate" : (8, 8),
-        "dot_erode" : (4, 4),
+        "dot_dilate" : (7, 7),
+        "dot_erode" : (2, 2),
         "dice_epsilon" : 25,
         "color" : "green",
         "value" : 1}
@@ -96,14 +96,13 @@ while True:
                     dice.append(Die(coords, 0, hue["color"]))
                     cv2.drawContours(frame, [approx], 0, color, 2)
                     cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), 2)
-                    cv2.circle(frame, tuple(d.roundedCenter), int(
-                        mean([min(d.centerDistances), max(d.centerDistances)])), (0, 0, 255), 3)
             #endregion
             #region Dots
             contours, _ = cv2.findContours(maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
             for c in contours:
-                approx = cv2.approxPolyDP(c, 1, False)
+                #approx = cv2.approxPolyDP(c, 1, False)
+                approx = c
                 if len(approx) > 4:
                     x, y, w, h = cv2.boundingRect(approx)
                     x2 = x + w
@@ -115,6 +114,12 @@ while True:
                             cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
                             cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
             #endregion
+            
+            for d in dice:
+                if d.dots == 0:
+                    d.dots = 0
+                else:
+                    d.dots = d.dots - 1
 
             if len(dice) > 0:
                 if hue["color"] == "red":
@@ -125,7 +130,8 @@ while True:
                     values[2] = dice[0].dots
 
         data = str(values)[1:-1]
-        server.send(data)
+        print(*values)
+        #server.send(data)
 
     currentFrame += 1
 
@@ -147,4 +153,4 @@ while True:
 
 video.release()
 cv2.destroyAllWindows()
-server.end()
+#server.end()
