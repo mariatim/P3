@@ -73,3 +73,79 @@ Erode: 2
 Open/Close: 1
 Blur: 5
 Treshold: 75
+
+----------
+08/12/2019, 16:53:09
+Green
+Dice:
+L-H: 105
+L-S: 20
+L-V: 8
+U-H: 185
+U-S: 75
+U-V: 60
+Epsilon: 25
+Dilate: 20
+Erode: 3
+Open/Close: 1
+BL-D: 5
+BL-sColor: 40
+BL-sSpace: 45
+
+Dots:
+Epsilon: 1
+Dilate: 8
+Erode: 4
+Open/Close: 1
+Blur: 0
+Treshold: 75
+----------
+08/12/2019, 16:56:09
+Red
+Dice:
+L-H: 0
+L-S: 42
+L-V: 30
+U-H: 26
+U-S: 100
+U-V: 86
+Epsilon: 25
+Dilate: 20
+Erode: 3
+Open/Close: 1
+BL-D: 5
+BL-sColor: 40
+BL-sSpace: 45
+
+Dots:
+Epsilon: 1
+Dilate: 7
+Erode: 5
+Open/Close: 1
+Blur: 0
+Treshold: 75
+----------
+08/12/2019, 17:01:42
+Blue
+Dice:
+L-H: 209
+L-S: 23
+L-V: 8
+U-H: 249
+U-S: 100
+U-V: 48
+Epsilon: 25
+Dilate: 20
+Erode: 3
+Open/Close: 1
+BL-D: 5
+BL-sColor: 40
+BL-sSpace: 45
+
+Dots:
+Epsilon: 1
+Dilate: 7
+Erode: 5
+Open/Close: 1
+Blur: 0
+Treshold: 75

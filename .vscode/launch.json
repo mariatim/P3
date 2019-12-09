@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name":"Demoday",
+            "name":"Evaluation",
             "type":"python",
             "request":"launch",
-            "program":"${workspaceFolder}/python-input/DEMODAY.py",
+            "program":"${workspaceFolder}/python-input/Evaluation.py",
             "console":"integratedTerminal"
         },
         {
