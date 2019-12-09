@@ -150,3 +150,26 @@ void applyColorScheme6() {
 
   color_plastic = color(#D96798);
 }
+
+void applyColorScheme7() {
+
+  color_r = 6;
+  color_g = 26;
+  color_b = 45;
+
+  color_background = color(6, 26, 45);
+
+  color_plankton1 = color(#CF3434);
+  color_plankton2 = color(#078229);
+  color_plankton3 = color(#34CF5F);
+  color_plankton4 = color(#D7D54B);
+
+  color_orca1 = color(55, 55, 55);
+  color_orca2 = color(226, 226, 226);
+
+  color_tuna = color(#5097DD);
+
+  color_mackerel = color(#879DAF);
+
+  color_plastic = color(#E0085A);
+}

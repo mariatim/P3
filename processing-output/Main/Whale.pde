@@ -218,6 +218,6 @@ class Whale {
     }
     endShape();
     fill(color_orca2);
-    ellipse(this.position.x, this.position.y, 15, 15);
+    ellipse(this.position.x, this.position.y, 25, 25);
   }
 }

@@ -8,12 +8,14 @@ from statistics import mean
 # Load the image and process it for the CV to have it easier to analyse
 # add "vid.mp4" to use test video
 #Add 0 for using the videofeed.
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 
 dice = []
 values = [0, 0, 0]
 currentFrame = 0
-server.setup()
+disableOutput = False
+
+if disableOutput == False: server.setup()
 
 def hc(inputNum):
     return inputNum/2
@@ -21,27 +23,27 @@ def hc(inputNum):
 def svc(inputNum):
     return inputNum/100*255 
 
-green = {"lower_threshold" : [hc(209), svc(23), svc(8)],
-        "upper_threshold" : [hc(249), svc(100), svc(48)],
+blue = {"lower_threshold" : [hc(207), svc(37), svc(11)],
+        "upper_threshold" : [hc(247), svc(100), svc(51)],
         "bilateral" : (5, 40, 45),
         "dice_erode" : (3, 3),
         "dice_dilate" : (20, 20),
-        "dot_dilate" : (8, 8),
+        "dot_dilate" : (7, 7),
         "dot_erode" : (2, 2),
         "dice_epsilon" : 25,
         "color" : "blue",
         "value" : 1}
-red = {"lower_threshold": [hc(0), svc(42), svc(30)],
-        "upper_threshold": [hc(26), svc(100), svc(86)],
+red = {"lower_threshold": [hc(0), svc(39), svc(49)],
+        "upper_threshold": [hc(29), svc(100), svc(89)],
         "bilateral": (5, 40, 45),
         "dice_erode": (3, 3),
         "dice_dilate": (20, 20),
         "dot_dilate": (7, 7),
-        "dot_erode": (3, 3),
+        "dot_erode": (2, 2),
         "dice_epsilon": 25,
         "color" : "red",
         "value" : 1}
-blue = {"lower_threshold" : [hc(105), svc(20), svc(8)],
+green = {"lower_threshold" : [hc(105), svc(20), svc(8)],
         "upper_threshold" : [hc(185), svc(75), svc(60)],
         "bilateral" : (5, 40, 45),
         "dice_erode" : (3, 3),
@@ -61,7 +63,7 @@ while True:
     if currentFrame % 30 == 0:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        values = [1, 1, 1]
+        values = [0, 0, 0]
         for hue in hues:
             #region Image processing
             lower_threshold = np.array(hue["lower_threshold"])
@@ -75,13 +77,13 @@ while True:
 
             # Alternative image processing with dots
             _, maskDots = cv2.threshold(maskDots, 75, 255, cv2.THRESH_BINARY)
-            maskDots = cv2.erode(maskDots, np.ones(hue["dot_erode"], np.uint8))
             maskDots = cv2.dilate(maskDots, np.ones(hue["dot_dilate"], np.uint8))
+            maskDots = cv2.erode(maskDots, np.ones(hue["dot_erode"], np.uint8))
             #endregion
 
             # Find contours and draw them
             #region Dice
-            contours, _ = cv2.findContours(maskDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(maskDice, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             dice = []
             for c in contours:
@@ -98,11 +100,11 @@ while True:
                     cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), 2)
             #endregion
             #region Dots
-            contours, _ = cv2.findContours(maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
             for c in contours:
-                #approx = cv2.approxPolyDP(c, 1, False)
-                approx = c
+                approx = cv2.approxPolyDP(c, 1, False)
+                #approx = c
                 if len(approx) > 4:
                     x, y, w, h = cv2.boundingRect(approx)
                     x2 = x + w
@@ -131,21 +133,24 @@ while True:
 
         data = str(values)[1:-1]
         #print(*values)
-        server.send(data)
+        if disableOutput == False:
+            if server.send(data) == False:
+                break
 
+
+        #region Draw the frames
+        cv2.namedWindow("Analysed", 0)
+        cv2.resizeWindow("Analysed", 640, 360)
+        cv2.imshow("Analysed", frame)
+        cv2.namedWindow("Processed-dice", 0)
+        cv2.resizeWindow("Processed-dice", 640, 360)
+        cv2.imshow("Processed-dice", maskDice)
+        cv2.namedWindow("Processed-dots", 0)
+        cv2.resizeWindow("Processed-dots", 640, 360)
+        cv2.imshow("Processed-dots", maskDots)
+        #endregion
+    
     currentFrame += 1
-
-    #region Draw the frames
-    cv2.namedWindow("Analysed", 0)
-    cv2.resizeWindow("Analysed", 640, 360)
-    cv2.imshow("Analysed", frame)
-    cv2.namedWindow("Processed-dice", 0)
-    cv2.resizeWindow("Processed-dice", 640, 360)
-    cv2.imshow("Processed-dice", maskDice)
-    cv2.namedWindow("Processed-dots", 0)
-    cv2.resizeWindow("Processed-dots", 640, 360)
-    cv2.imshow("Processed-dots", maskDots)
-    #endregion
 
     key = cv2.waitKey(1)
     if key == 27:
@@ -153,4 +158,4 @@ while True:
 
 video.release()
 cv2.destroyAllWindows()
-server.end()
+if disableOutput == False: server.end()

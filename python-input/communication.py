@@ -15,7 +15,12 @@ def setup():
 
 def send(data):
     global conn
-    conn.sendall(bytes(data, "ascii"))
+    try:
+        conn.sendall(bytes(data, "ascii"))
+        return True
+    except:
+        conn.close()
+        return False
 
 def end():
     global conn

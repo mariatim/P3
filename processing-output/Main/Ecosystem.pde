@@ -124,7 +124,7 @@ class Ecosystem {
         tu.tryToRessurect();
       }
     }
-    println(sum);
+    //println(sum);
   }
 
   void showWhales() {
@@ -183,131 +183,25 @@ class Ecosystem {
     }
   }
 
-  void bg() {
-    int colorChange = 2*(temperatureLevel);
-    if (frameCount % 5 == 0) {
-      switch(temperatureLevel) {
-      case 0:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 1:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 2:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 3:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 4:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 5:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      case 6:
-        if (bgR <= r+colorChange) {
-          bgR++;
-        } else if (bgR > r+colorChange) {
-          bgR--;
-        }
-        if (bgG <= g-colorChange) {
-          bgG++;
-        } else if (bgG > g-colorChange) {
-          bgG--;
-        }
-        if (bgB <= b-colorChange) {
-          bgB++;
-        } else if (bgB > b-colorChange) {
-          bgB--;
-        }
-        break;
-      }
+  void bg() {    
+    if (bgR < r+(temperatureLevel*4)){
+      bgR++;
+    } else if (bgR > r+(temperatureLevel*4)){
+      bgR--;
     }
+    
+    if (bgG < g+(temperatureLevel*(-2))){
+      bgG++;
+    } else if (bgG > g+(temperatureLevel*(-2))){
+      bgG--;
+    }
+    
+    if (bgB < b+(temperatureLevel*(-3))){
+      bgB++;
+    } else if (bgB > b+(temperatureLevel*(-3))){
+      bgB--;
+    }
+    
     //println(bgR, bgG, bgB);
     background(bgR, bgG, bgB);
   }

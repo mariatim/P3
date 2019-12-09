@@ -164,7 +164,7 @@ while True:
     #endregion
     #region Dots
     contours, _ = cv2.findContours(
-        maskDots, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        maskDots, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
     for c in contours:
         approx = cv2.approxPolyDP(c, TB("Epsilon", 2), True)
