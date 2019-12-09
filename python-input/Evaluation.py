@@ -11,7 +11,7 @@ from statistics import mean
 video = cv2.VideoCapture(0)
 
 dice = []
-values = [1, 1, 1]
+values = [0, 0, 0]
 currentFrame = 0
 server.setup()
 

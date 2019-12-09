@@ -3,26 +3,29 @@ class Whale {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed, baseSpeed;
+  float maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
-  float alignValue = .8;
-  float cohesionValue = .2;
-  float cohesionBase = .3;
-  float seperationValue = .4;
+  float alignValue = .4;
+  float cohesionValue = .1;
+  float cohesionBase = .1;
+  float seperationValue = .15;
+
+  color c;
 
   Whale() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
     this.velocity.setMag(random(1, 2));
     this.acceleration = new PVector();
-    this.maxForce = 1;
-    this.maxSpeed = 2;
-    this.baseSpeed = 2;
+    this.maxForce = 2;
+    this.maxSpeed = 3;
+    this.baseSpeed = 3;
     history = new ArrayList<PVector>();
-    trailSize = 30;
+    trailSize = 18;
+    c = color_orca1;
   }
 
   void edges() {
@@ -67,6 +70,37 @@ class Whale {
           total++;
         }
       }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+
+  void avoidIsland() {
+    int perceptionRadius = 200;
+    PVector steering = new PVector();
+    int total = 0;
+    PVector island1 = new PVector(3.5*width/8, height+50);
+    PVector island2 = new PVector(2.85*width/4, height+150);
+    float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
+    float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
+    if (d1 < perceptionRadius) {
+      //ellipse(island1.x, island1.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island1);
+      diff.div(d1 * d1);
+      steering.add(diff);
+      total++;
+    }
+    if (d2 < perceptionRadius) {
+      //ellipse(island2.x, island2.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island2);
+      diff.div(d2 * d2);
+      steering.add(diff);
+      total++;
     }
     if (total > 0) {
       steering.div(total);
@@ -172,16 +206,18 @@ class Whale {
 
   void show() {
     noStroke();
-    fill(40);
-    ellipse(this.position.x, this.position.y, 50, 50);
+    fill(c);
+    ellipse(this.position.x, this.position.y, 35, 35);
     beginShape();
     //noFill();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
-      float r = map(i, 0, history.size(), 10, 40);
+      float r = map(i, 0, history.size(), 10, 30);
       ellipse(pos.x, pos.y, r, r);
       //vertex(pos.x, pos.y);
     }
     endShape();
+    fill(color_orca2);
+    ellipse(this.position.x, this.position.y, 15, 15);
   }
 }

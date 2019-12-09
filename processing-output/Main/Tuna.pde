@@ -6,18 +6,22 @@ class Tuna {
 
   private boolean isAlive;
   private int frameCountWhenKilled;
-  private int FRAMES_NEEDED_TO_RESSURECT = 200;
-  int maxSpeed, baseSpeed;
+  private int FRAMES_NEEDED_TO_RESSURECT = 150;
+  boolean caught;
+
+  float maxSpeed, baseSpeed;
 
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .3;
-  float cohesionValue = .3;
-  float cohesionBase = .3;
+  float cohesionValue = .2;
+  float cohesionBase = .2;
   float seperationValue = .5;
-  
+
   float alpha;
+
+  color c;
 
   Tuna() {
     this.position = new PVector(random(width), random(height));
@@ -30,8 +34,10 @@ class Tuna {
     history = new ArrayList<PVector>();
     trailSize = 8;
     isAlive = true;
+    caught = false;
     frameCountWhenKilled = 0;
-    alpha = 255;
+    alpha = 0;
+    c = color_tuna;
   }
 
   void edges() {
@@ -86,6 +92,55 @@ class Tuna {
     this.applyForce(steering);
   }
 
+  void avoidIsland() {
+    int perceptionRadius = 200;
+    PVector steering = new PVector();
+    int total = 0;
+    PVector island1 = new PVector(3.5*width/8, height+50);
+    PVector island2 = new PVector(2.85*width/4, height+150);
+    float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
+    float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
+    if (d1 < perceptionRadius) {
+      PVector diff = PVector.sub(this.position, island1);
+      diff.div(d1 * d1);
+      steering.add(diff);
+      total++;
+    }
+    if (d2 < perceptionRadius) {
+      PVector diff = PVector.sub(this.position, island2);
+      diff.div(d2 * d2);
+      steering.add(diff);
+      total++;
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+
+  void getCaught(ArrayList<Hook> hooks) {
+    if (!this.caught) {
+      for (Hook h : hooks) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= h.radius) {
+          this.kill();
+          this.position = new PVector(random(width), random(height));
+          this.caught = true;
+          //this.velocity = new PVector(0, 0);
+          //this.velocity = h.direction.copy();
+          //this.position = h.currentEndPosition.copy();
+        }/*
+        if (h.active == true && dist(this.position.x, this.position.y, h.startingPosition.x, h.startingPosition.y) <= h.radius) {
+          this.kill();
+          this.position = new PVector(random(width), random(height));
+          this.caught = true;
+        }*/
+      }
+    }
+  }
+
   void avoidWhales(ArrayList<Whale> wh) {
     int perceptionRadius = 80;
     PVector steering = new PVector();
@@ -113,10 +168,12 @@ class Tuna {
     PVector steering = new PVector();
     int total = 0;
     for (Tuna other : boids) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
-        steering.add(other.velocity);
-        total++;
+      if (other.caught == false) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (other != this && d < perceptionRadius) {
+          steering.add(other.velocity);
+          total++;
+        }
       }
     }
     if (total > 0) {
@@ -133,12 +190,14 @@ class Tuna {
     PVector steering = new PVector();
     int total = 0;
     for (Tuna other : boids) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
-        PVector diff = PVector.sub(this.position, other.position);
-        diff.div(d * d);
-        steering.add(diff);
-        total++;
+      if (other.caught == false) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (other != this && d < perceptionRadius) {
+          PVector diff = PVector.sub(this.position, other.position);
+          diff.div(d * d);
+          steering.add(diff);
+          total++;
+        }
       }
     }
     if (total > 0) {
@@ -155,10 +214,12 @@ class Tuna {
     PVector steering = new PVector();
     int total = 0;
     for (Tuna other : boids) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
-        steering.add(other.position);
-        total++;
+      if (other.caught == false) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (other != this && d < perceptionRadius) {
+          steering.add(other.position);
+          total++;
+        }
       }
     }
     if (total > 0) {
@@ -175,7 +236,6 @@ class Tuna {
     PVector alignment = this.align(boids);
     PVector cohesion = this.cohesion(boids);
     PVector separation = this.separation(boids);
-    //PVector avoidEdge = this.edges();
 
     alignment.mult(alignValue);
     cohesion.mult(cohesionValue);
@@ -204,11 +264,11 @@ class Tuna {
   void show() {
     noStroke();
     if (isAlive) {
-      if (frameCount%2 == 0 && alpha < 255) {
+      if (/*frameCount%1 == 0 && */ this.alpha < 255) {
         alpha++;
       }
     }
-    fill(0, 40, 150, alpha);
+    fill(c, alpha);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
     //noFill();
@@ -233,12 +293,14 @@ class Tuna {
 
   private void ressurect() {
     isAlive = true;
+    this.position = new PVector(random(width), random(height));
     alpha = 0;
   }
 
   public void tryToRessurect() {
     if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
-      ressurect();
+      this.caught = false;
+      this.ressurect();
     }
   }
 }

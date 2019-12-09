@@ -3,14 +3,16 @@ class Mackerel {
   PVector velocity;
   PVector acceleration;
   int maxForce;
-  int maxSpeed, baseSpeed;
+  float maxSpeed, baseSpeed;
   ArrayList<PVector> history;
   int trailSize;
 
   float alignValue = .65;
-  float cohesionValue = .9;
-  float cohesionBase = .9;
+  float cohesionValue = .4;
+  float cohesionBase = .4;
   float seperationValue = .8;
+
+  color c;
 
   Mackerel() {
     this.position = new PVector(random(width), random(height));
@@ -22,6 +24,7 @@ class Mackerel {
     this.baseSpeed = 5;
     history = new ArrayList<PVector>();
     trailSize = 8;
+    c = color_mackerel;
   }
 
   void edges() {
@@ -76,6 +79,37 @@ class Mackerel {
     this.applyForce(steering);
   }
 
+  void avoidIsland() {
+    int perceptionRadius = 200;
+    PVector steering = new PVector();
+    int total = 0;
+    PVector island1 = new PVector(3.5*width/8, height+50);
+    PVector island2 = new PVector(2.85*width/4, height+150);
+    float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
+    float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
+    if (d1 < perceptionRadius) {
+      //ellipse(island1.x, island1.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island1);
+      diff.div(d1 * d1);
+      steering.add(diff);
+      total++;
+    }
+    if (d2 < perceptionRadius) {
+      //ellipse(island2.x, island2.y, perceptionRadius*2, perceptionRadius*2);
+      PVector diff = PVector.sub(this.position, island2);
+      diff.div(d2 * d2);
+      steering.add(diff);
+      total++;
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(this.maxSpeed);
+      steering.sub(this.velocity);
+      steering.limit(this.maxForce);
+    }
+    this.applyForce(steering);
+  }
+
   void avoidWhales(ArrayList<Whale> wh) {
     int perceptionRadius = 80;
     PVector steering = new PVector();
@@ -103,12 +137,14 @@ class Mackerel {
     PVector steering = new PVector();
     int total = 0;
     for (Tuna other : t) {
-      float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (d < perceptionRadius) {
-        PVector diff = PVector.sub(this.position, other.position);
-        diff.div(d * d);
-        steering.add(diff);
-        total++;
+      if (other.isAlive) {
+        float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+        if (d < perceptionRadius) {
+          PVector diff = PVector.sub(this.position, other.position);
+          diff.div(d * d);
+          steering.add(diff);
+          total++;
+        }
       }
     }
     if (total > 0) {
@@ -215,7 +251,7 @@ class Mackerel {
 
   void show() {
     noStroke();
-    fill(192, 192, 192);
+    fill(c);
     ellipse(this.position.x, this.position.y, 8, 8);
     beginShape();
     //noFill();
