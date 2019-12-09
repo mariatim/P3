@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from die import Die
 from datetime import datetime
+from statistics import mean
 
 video = cv2.VideoCapture(0)
 dice = []
@@ -61,7 +62,7 @@ def saveColorToFile(clr):
     now = now.strftime("%d/%m/%Y, %H:%M:%S")
     print(now, file=valueFile)
 
-    print("Red" if clr.lower == 'r' else "Green" if clr.lower == 'g' else "Blue", file=valueFile)
+    print("Red" if clr == 'r' else "Green" if clr == 'g' else "Blue", file=valueFile)
 
 
     for item in arr:
@@ -79,7 +80,7 @@ cv2.createTrackbar("L-V", "Dice", 8, 100, nothing)
 cv2.createTrackbar("U-H", "Dice", 185, 360, nothing)
 cv2.createTrackbar("U-S", "Dice", 75, 100, nothing)
 cv2.createTrackbar("U-V", "Dice", 60, 100, nothing)
-cv2.createTrackbar("Epsilon", "Dice", 25, 500, nothing)
+cv2.createTrackbar("Epsilon", "Dice", 25, 50, nothing)
 cv2.createTrackbar("Dilate", "Dice", 19, 50, nothing)
 cv2.createTrackbar("Erode", "Dice", 3, 50, nothing)
 cv2.createTrackbar("Open/Close", "Dice", 1, 1, nothing)
@@ -89,7 +90,7 @@ cv2.createTrackbar("BL-sSpace", "Dice", 100, 200, nothing)
 
 cv2.namedWindow("Dots")
 cv2.resizeWindow("Dots", 500, 250)
-cv2.createTrackbar("Epsilon", "Dots", 1, 500, nothing)
+cv2.createTrackbar("Epsilon", "Dots", 1, 50, nothing)
 cv2.createTrackbar("Dilate", "Dots", 9, 50, nothing)
 cv2.createTrackbar("Erode", "Dots", 2, 50, nothing)
 cv2.createTrackbar("Open/Close", "Dots", 1, 1, nothing)
@@ -130,14 +131,6 @@ while True:
 
     #IMAGE PROCESSING DOTS
     #region
-
-    #maskDots = cv2.inRange(hsv, lower_threshold, upper_threshold)
-    #maskDots = cv2.bilateralFilter(maskDots, TB("BL-D", 2), TB("BL-sColor", 2), TB("BL-sSpace", 2))
-    try:
-        maskDots = cv2.blur(maskDots, (TB("Blur", 2), TB("Blur", 2)))
-    except:
-        maskDots = cv2.blur(maskDots, (2, 2))
-
     _, maskDots = cv2.threshold(maskDots, TB("Threshold", 2), 255, cv2.THRESH_BINARY)
     
     if TB("Open/Close", 2) == 0:
@@ -151,7 +144,7 @@ while True:
     # Find contours and draw them
     #region Dice
     contours, _ = cv2.findContours(
-        maskDice, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        maskDice, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     dice = []
     for c in contours:
@@ -161,15 +154,13 @@ while True:
             d = Die(coords, 0)
             if (d.isSquare()):
                 color = (0, 200, 0)
-                dice.append(Die(coords, 0, "blue"))
             else:
                 color = (200, 0, 0)
+            dice.append(Die(coords, 0, "blue"))
             cv2.drawContours(frame, [approx], 0, color, 2)
             cv2.drawContours(maskDice, [approx], 0, (90, 90, 90), 2)
             cv2.circle(frame, tuple(d.roundedCenter), int(
-                d.minCenterDistance), (0, 0, 255), 3)
-            cv2.circle(frame, tuple(d.roundedCenter), int(
-                d.maxCenterDistance), (255, 255, 255), 3)
+                mean([min(d.centerDistances), max(d.centerDistances)])), (0, 0, 255), 3)
     #endregion
     #region Dots
     contours, _ = cv2.findContours(
@@ -177,7 +168,7 @@ while True:
 
     for c in contours:
         approx = cv2.approxPolyDP(c, TB("Epsilon", 2), True)
-        if len(approx) >= 4:
+        if len(approx) > 4:
             x, y, w, h = cv2.boundingRect(approx)
             x2 = x + w
             y2 = y + h

@@ -1,4 +1,5 @@
 from scipy.spatial import distance as dist
+from statistics import mean
 
 class Die:
     def __init__(self, _coords = None, _dots = 1, _color="undefined"):
@@ -21,24 +22,26 @@ class Die:
             self.roundedCenter = tuple([int(c) for c in self.center])
             self.width = abs(self.xSpan[1]-self.xSpan[0])
             self.height = abs(self.xSpan[1]-self.xSpan[0])
+            
             self.distances = (dist.euclidean(self.a, self.b),
                                 dist.euclidean(self.b, self.c),
                                 dist.euclidean(self.c, self.d),
                                 dist.euclidean(self.d, self.a))
             self.centerDistances = tuple(map(lambda x : dist.euclidean(x, self.center), self.coords))
-            self.maxCenterDistance = max(self.centerDistances)
-            self.minCenterDistance = min(self.centerDistances)
+            self.averageDistance = mean([min(self.centerDistances),max(self.centerDistances)])
+            
+            self.circumscribedX = (self.center[0]-self.averageDistance, self.center[0]+self.averageDistance)
+            self.circumscribedY = (self.center[1]-self.averageDistance, self.center[1]+self.averageDistance)
 
     def isSquare(self):
         return True if abs(min(self.distances)-max(self.distances)) < min(self.distances)/3 else False
 
     def isBelongs(self, dotCoordsX, dotCoordsY):
-        response = True
         for dcx in dotCoordsX:
-            if not (self.xSpan[0] < dcx < self.xSpan[1]):
+            if not (self.circumscribedX[0] < dcx < self.circumscribedX[1]):
                 return False
         for dcy in dotCoordsY:
-            if not (self.ySpan[0] < dcy < self.ySpan[1]):
+            if not (self.circumscribedY[0] < dcy < self.circumscribedY[1]):
                 return False
         return True
 
