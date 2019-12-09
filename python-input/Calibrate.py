@@ -163,20 +163,22 @@ while True:
                 mean([min(d.centerDistances), max(d.centerDistances)])), (0, 0, 255), 3)
     #endregion
     #region Dots
-    contours, _ = cv2.findContours(
+    contours, hierarchy = cv2.findContours(
         maskDots, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
-    for c in contours:
-        approx = cv2.approxPolyDP(c, TB("Epsilon", 2), True)
-        if len(approx) > 4:
-            x, y, w, h = cv2.boundingRect(approx)
-            x2 = x + w
-            y2 = y + h
-            for d in dice:
-                if (d.isBelongs([x, x2], [y, y2])):
-                    d.dots += 1
-                    cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
-                    cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
+    for index in range(len(contours)):
+        c = contours[index]
+        if hierarchy[0][index][3] != -1:
+            approx = cv2.approxPolyDP(c, TB("Epsilon", 2), True)
+            if len(approx) > 4:
+                x, y, w, h = cv2.boundingRect(approx)
+                x2 = x + w
+                y2 = y + h
+                for d in dice:
+                    if (d.isBelongs([x, x2], [y, y2])):
+                        d.dots += 1
+                        cv2.drawContours(frame, [approx], 0, (0, 200, 200), 2)
+                        cv2.drawContours(maskDots, [approx], 0, (90, 90, 90), 2)
 
     if len(dice) < 3:
         for i in range(len(dice), 3):

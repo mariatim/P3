@@ -17,8 +17,8 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  size(1360, 768);
-  //fullScreen(P2D, 2);
+  //size(1360, 768);
+  fullScreen(P2D, 2);
   frameRate(24);
   applyColorScheme7();
 
@@ -34,7 +34,7 @@ void setup() {
 void draw() {
   if (myClient.available() > 0) {
     oldInput = input;
-    //input = myClient.readString();
+    input = myClient.readString();
     inputInt = int(split(input, ", "));
   }
   if (oldInput != input) {
