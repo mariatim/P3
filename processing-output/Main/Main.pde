@@ -42,7 +42,7 @@ void draw() {
   }
   e.display();
   //println(frameRate);6
-  /*
+  
   if (inputInt.length > 0) {
    switch(inputInt[0]) {
    case 0:
@@ -115,7 +115,7 @@ void draw() {
    e.changeFishingRate(6);
    break;
    }
-   }*/
+   }
 }
 
 
