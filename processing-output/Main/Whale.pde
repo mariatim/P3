@@ -81,7 +81,7 @@ class Whale {
   }
 
   void avoidIsland() {
-    int perceptionRadius = 200;
+    int perceptionRadius = 300;
     PVector steering = new PVector();
     int total = 0;
     PVector island1 = new PVector(3.5*width/8, height+50);

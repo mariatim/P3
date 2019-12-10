@@ -6,7 +6,7 @@ class Tuna {
 
   private boolean isAlive;
   private int frameCountWhenKilled;
-  private int FRAMES_NEEDED_TO_RESSURECT = 150;
+  private int FRAMES_NEEDED_TO_RESSURECT = 250;
   boolean caught;
 
   float maxSpeed, baseSpeed;
@@ -93,7 +93,7 @@ class Tuna {
   }
 
   void avoidIsland() {
-    int perceptionRadius = 200;
+    int perceptionRadius = 300;
     PVector steering = new PVector();
     int total = 0;
     PVector island1 = new PVector(3.5*width/8, height+50);
@@ -124,19 +124,10 @@ class Tuna {
   void getCaught(ArrayList<Hook> hooks) {
     if (!this.caught) {
       for (Hook h : hooks) {
-        if (h.active == true && dist(this.position.x, this.position.y, h.currentEndPosition.x, h.currentEndPosition.y) <= h.radius) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentPosition.x, h.currentPosition.y) <= h.radius) {
           this.kill();
-          this.position = new PVector(random(width), random(height));
           this.caught = true;
-          //this.velocity = new PVector(0, 0);
-          //this.velocity = h.direction.copy();
-          //this.position = h.currentEndPosition.copy();
-        }/*
-        if (h.active == true && dist(this.position.x, this.position.y, h.startingPosition.x, h.startingPosition.y) <= h.radius) {
-          this.kill();
-          this.position = new PVector(random(width), random(height));
-          this.caught = true;
-        }*/
+        }
       }
     }
   }
@@ -293,8 +284,8 @@ class Tuna {
 
   private void ressurect() {
     isAlive = true;
-    this.position = new PVector(random(width), random(height));
     alpha = 0;
+    this.position = new PVector(random(width), random(height));
   }
 
   public void tryToRessurect() {

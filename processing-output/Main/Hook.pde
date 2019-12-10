@@ -1,71 +1,85 @@
 class Hook {
   PVector startingPosition;
-  PVector currentEndPosition;
+  PVector currentPosition;
+  PVector velocity;
+  PVector acceleration;
   PVector direction;
+
+  float maxSpeed;
+  float maxForce;
+
   int radius;
   boolean active;
-
-  boolean dir;
 
   color c;
   int alpha;
 
+  float angle;
+
+  PVector goal;
+
   Hook() {
     this.reset();
+    acceleration = new PVector(0, 0);
+    velocity = new PVector(0, 0);
     radius = 15;
     active = false;
-    dir = true;
     c = color_plastic;
+    maxSpeed = 5;
+    maxForce = 0.1;
   }
 
   void reset() {
     startingPosition = new PVector(width/2, height-20);
-    direction = new PVector(random(-4, 4), random(-2, -4));
-    currentEndPosition = startingPosition.copy();
-    alpha = 0;
+    goal = new PVector(random(width/6, 5*width/6), random(height/5, 4*height/5));
+    currentPosition = startingPosition.copy();
+    alpha = 255;
   }
 
   void show() {
-    if (this.active == true) {
-      currentEndPosition.add(this.updateDirection().mult(2));
-    }
-    if (this.active == true && this.alpha < 200) {
-      this.alpha = this.alpha + 40;
-    } else if (this.active == false && this.alpha >= 0) {
-      this.alpha = this.alpha - 40;
-      if (this.alpha <= 0) {
-        this.reset();
-      }
-    }
-    stroke(c, alpha);
+    float theta = velocity.heading() + PI/2;
+    stroke(c);
     strokeWeight(2);
     noFill();
-    //point(this.currentEndPosition.x, this.currentEndPosition.y);
-    //ellipse(this.currentEndPosition.x, this.currentEndPosition.y, 5, 5);
-    //ellipse(this.currentEndPosition.x, this.currentEndPosition.y, 15, 15);
-    ellipse(this.currentEndPosition.x, this.currentEndPosition.y, 25, 25);
+    pushMatrix();
+    translate(this.currentPosition.x, this.currentPosition.y);
+    rotate(theta);
+    arc(-20, 30, 30, 140, PI, TWO_PI, OPEN);
+    arc(-20, 30, 30, -10, PI, TWO_PI, OPEN);
+    ellipse(-20, 10, 8, 8);
+    ellipse(-20, -10, 4, 4);
+    popMatrix();
   }
 
-  void catchFish(ArrayList<Tuna> tu) {
-    if (this.active || this.alpha > 0) {
-      for (Tuna t : tu) {
-        if (dist(this.currentEndPosition.x, this.currentEndPosition.y, t.position.x, t.position.y) <= 10 || dist(this.currentEndPosition.x, this.currentEndPosition.y, this.startingPosition.x, this.startingPosition.y) >= width/2) {
-          this.dir = false;
-        } else if (dist(this.currentEndPosition.x, this.currentEndPosition.y, this.startingPosition.x, this.startingPosition.y) <= 10) {
-          this.dir = true;
-          this.direction = new PVector(random(-4, 4), random(-2, -4));
-        }
-      }
-    }
+  void seek(PVector target) {
+    PVector desired = PVector.sub(target, this.currentPosition);
+    desired.normalize();
+    desired.mult(maxSpeed);
+    PVector steer = PVector.sub(desired, velocity);
+    steer.limit(maxForce);
+    applyForce(steer);
   }
 
-  PVector updateDirection() {
-    PVector d = new PVector();
-    if (dir == true) {
-      d = this.direction.copy();
-    } else if (dir == false) {
-      d = this.direction.copy().mult(-1);
+  void applyForce(PVector force) {
+    acceleration.add(force);
+  }
+
+  void update() {
+    velocity.add(acceleration);
+    velocity.limit(maxSpeed);
+    currentPosition.add(velocity);
+    acceleration.mult(0);
+  }
+
+  void catchFish() {
+    if (this.active) {
+      this.seek(goal);
     }
-    return d;
+    if (!this.active) {
+      this.seek(startingPosition);
+    }
+    if ((dist(this.goal.x, this.goal.y, currentPosition.x, currentPosition.y) <= 10)) {
+      goal = new PVector(random(width/6, 5*width/6), random(height/5, 4*height/5));
+    }
   }
 }

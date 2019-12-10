@@ -108,10 +108,8 @@ class Ecosystem {
   }
 
   void showTuna() {
-    int sum = 0;
     for (Tuna tu : t) {
       if (tu.isAlive()) {
-        sum++;
         tu.edges();
         tu.avoidPollution(plasticIsland.pl);
         tu.avoidIsland();
@@ -124,7 +122,6 @@ class Ecosystem {
         tu.tryToRessurect();
       }
     }
-    //println(sum);
   }
 
   void showWhales() {
@@ -140,7 +137,9 @@ class Ecosystem {
 
   void showHooks() {
     for (Hook h : hooks) {
-      h.catchFish(t);
+      h.update();
+      //h.seek(new PVector(mouseX, mouseY));
+      h.catchFish();
       h.show();
     }
   }

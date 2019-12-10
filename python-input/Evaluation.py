@@ -8,7 +8,7 @@ from statistics import mean
 # Load the image and process it for the CV to have it easier to analyse
 # add "vid.mp4" to use test video
 #Add 0 for using the videofeed.
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(1)
 
 dice = []
 values = [0, 0, 0]
