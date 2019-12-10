@@ -96,14 +96,19 @@ class Ecosystem {
 
   void showMackerels() {
     for (Mackerel ma : m) {
-      ma.edges();
-      ma.avoidPollution(plasticIsland.pl);
-      ma.avoidIsland();
-      ma.avoidWhales(w);
-      ma.avoidTuna(t);
-      ma.update();
-      ma.flock(m);
-      ma.show();
+      if (ma.isAlive()) {
+        ma.edges();
+        ma.avoidPollution(plasticIsland.pl);
+        ma.avoidIsland();
+        ma.avoidWhales(w);
+        ma.avoidTuna(t);
+        ma.getCaught(hooks);
+        ma.update();
+        ma.flock(m);
+        ma.show();
+      } else {
+        ma.tryToRessurect();
+      }
     }
   }
 
@@ -183,24 +188,24 @@ class Ecosystem {
   }
 
   void bg() {    
-    if (bgR < r+(temperatureLevel*4)){
+    if (bgR < r+(temperatureLevel*4)) {
       bgR++;
-    } else if (bgR > r+(temperatureLevel*4)){
+    } else if (bgR > r+(temperatureLevel*4)) {
       bgR--;
     }
-    
-    if (bgG < g+(temperatureLevel*(-2))){
+
+    if (bgG < g+(temperatureLevel*(-2))) {
       bgG++;
-    } else if (bgG > g+(temperatureLevel*(-2))){
+    } else if (bgG > g+(temperatureLevel*(-2))) {
       bgG--;
     }
-    
-    if (bgB < b+(temperatureLevel*(-3))){
+
+    if (bgB < b+(temperatureLevel*(-3))) {
       bgB++;
-    } else if (bgB > b+(temperatureLevel*(-3))){
+    } else if (bgB > b+(temperatureLevel*(-3))) {
       bgB--;
     }
-    
+
     //println(bgR, bgG, bgB);
     background(bgR, bgG, bgB);
   }

@@ -121,17 +121,6 @@ class Tuna {
     this.applyForce(steering);
   }
 
-  void getCaught(ArrayList<Hook> hooks) {
-    if (!this.caught) {
-      for (Hook h : hooks) {
-        if (h.active == true && dist(this.position.x, this.position.y, h.currentPosition.x, h.currentPosition.y) <= h.radius) {
-          this.kill();
-          this.caught = true;
-        }
-      }
-    }
-  }
-
   void avoidWhales(ArrayList<Whale> wh) {
     int perceptionRadius = 80;
     PVector steering = new PVector();
@@ -271,6 +260,18 @@ class Tuna {
       //vertex(pos.x, pos.y);
     }
     endShape();
+  }
+
+  void getCaught(ArrayList<Hook> hooks) {
+    if (!this.caught) {
+      for (Hook h : hooks) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentPosition.x, h.currentPosition.y) <= h.radius) {
+          //ellipse(h.currentPosition.x-20, h.currentPosition.y, h.radius*2, h.radius*2);
+          this.kill();
+          this.caught = true;
+        }
+      }
+    }
   }
 
   public boolean isAlive() {

@@ -22,7 +22,7 @@ class Hook {
     this.reset();
     acceleration = new PVector(0, 0);
     velocity = new PVector(0, 0);
-    radius = 15;
+    radius = 35;
     active = false;
     c = color_plastic;
     maxSpeed = 5;
@@ -48,6 +48,7 @@ class Hook {
     arc(-20, 30, 30, -10, PI, TWO_PI, OPEN);
     ellipse(-20, 10, 8, 8);
     ellipse(-20, -10, 4, 4);
+    //ellipse(-20, 0, radius*2, radius*2);
     popMatrix();
   }
 

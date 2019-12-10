@@ -15,6 +15,7 @@ class Whale {
 
   color c;
 
+
   Whale() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();

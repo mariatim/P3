@@ -14,6 +14,12 @@ class Mackerel {
 
   color c;
 
+  boolean caught;
+  boolean isAlive;
+  float alpha;
+  int frameCountWhenKilled;
+  int FRAMES_NEEDED_TO_RESSURECT = 250;
+
   Mackerel() {
     this.position = new PVector(random(width), random(height));
     this.velocity = PVector.random2D();
@@ -25,6 +31,9 @@ class Mackerel {
     history = new ArrayList<PVector>();
     trailSize = 8;
     c = color_mackerel;
+    caught = false;
+    isAlive = true;
+    alpha = 0;
   }
 
   void edges() {
@@ -251,7 +260,12 @@ class Mackerel {
 
   void show() {
     noStroke();
-    fill(c);
+    if (isAlive) {
+      if (this.alpha < 255) {
+        alpha++;
+      }
+    }
+    fill(c, alpha);
     ellipse(this.position.x, this.position.y, 8, 8);
     beginShape();
     //noFill();
@@ -262,5 +276,39 @@ class Mackerel {
       //vertex(pos.x, pos.y);
     }
     endShape();
+  }
+
+  void getCaught(ArrayList<Hook> hooks) {
+    if (!this.caught) {
+      for (Hook h : hooks) {
+        if (h.active == true && dist(this.position.x, this.position.y, h.currentPosition.x, h.currentPosition.y) <= h.radius) {
+          //ellipse(h.currentPosition.x-20, h.currentPosition.y, h.radius*2, h.radius*2);
+          this.kill();
+          this.caught = true;
+        }
+      }
+    }
+  }
+
+  public boolean isAlive() {
+    return isAlive;
+  }
+
+  public void kill() {
+    isAlive = false;
+    frameCountWhenKilled = frameCount;
+  }
+
+  private void ressurect() {
+    isAlive = true;
+    alpha = 0;
+    this.position = new PVector(random(width), random(height));
+  }
+
+  public void tryToRessurect() {
+    if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
+      this.caught = false;
+      this.ressurect();
+    }
   }
 }
