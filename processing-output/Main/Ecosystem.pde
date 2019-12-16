@@ -11,20 +11,14 @@ class Ecosystem {
   ArrayList<Whale> w;
   int whaleFlockSize = 9;
 
-  private int MIN_TEMP_VALUE = 0;
-  private int MAX_TEMP_VALUE = 6;
+  int MIN_DIE_VALUE = 0;
+  int MAX_DIE_VALUE = 6;
 
-  private int temperatureLevel;
+  int temperatureLevel;
 
-  private int MIN_DIE_VALUE = 0;
-  private int MAX_DIE_VALUE = 6;
+  int fishingLevel;
 
-  private int fishingLevel;
-
-  private int MIN_POL_VALUE = 0;
-  private int MAX_POL_VALUE = 6;
-
-  private int pollutionLevel;
+  int pollutionLevel;
 
   PollutionIsland pollutionIsland;
 
@@ -33,13 +27,15 @@ class Ecosystem {
   int r = color_r;
   int g = color_g;
   int b = color_b;
-  ArrayList<Boat> boats;
-
-  int numberOfBoats = 6;
 
   int bgR = r;
   int bgG = g;
   int bgB = b;
+
+  ArrayList<Boat> boats;
+
+  int numberOfBoats = 6;
+
 
   Ecosystem() {
     t = new ArrayList<Tuna>();
@@ -143,7 +139,6 @@ class Ecosystem {
   void showBoats() {
     for (Boat b : boats) {
       b.update();
-      //b.seek(new PVector(mouseX, mouseY));
       b.catchFish();
       b.show();
     }
@@ -205,8 +200,6 @@ class Ecosystem {
     } else if (bgB > b+(temperatureLevel*(-3))) {
       bgB--;
     }
-
-    //println(bgR, bgG, bgB);
     background(bgR, bgG, bgB);
   }
 
@@ -301,13 +294,6 @@ class Ecosystem {
       for (Boat b : boats) {
         b.active = false;
       }
-      //if (boats.get(0).alpha <= 0) {
-      //  boats.clear();
-      //  println("cleared");
-      //  for (int i = 0; i < numberOfBoats; i++) {
-      //    boats.add(new Boat());
-      //  }
-      //}
       break;
     case 1:
       for (Boat b : boats) {
@@ -365,56 +351,4 @@ class Ecosystem {
       break;
     }
   }
-  /*
-    if (fishingLevel==1) {
-   // shark you are free to live
-   } else if (fishingLevel==2) {
-   fishShark(getNumberOfLiveShark()/10);
-   } else if (fishingLevel==3) {
-   fishShark(getNumberOfLiveShark()/8);
-   } else if (fishingLevel==4) {
-   fishShark(getNumberOfLiveShark()/6);
-   } else if (fishingLevel==5) {
-   fishShark(getNumberOfLiveShark()/2);
-   } else if (fishingLevel==6) {
-   fishShark(getNumberOfLiveShark()-1);
-   }
-   */
-
-
-  /*
-  private void fishShark(int numberOfSharkToFish) {
-   
-   if (numberOfSharkToFish >= getNumberOfLiveShark()) {
-   numberOfSharkToFish = getNumberOfLiveShark();
-   }
-   
-   while (numberOfSharkToFish > 0) {
-   if (getIndexForFirstAliveShark() == -1) {
-   break;
-   }
-   s.get(getIndexForFirstAliveShark()).kill();
-   numberOfSharkToFish--;
-   }
-   }
-   
-   public int getNumberOfLiveShark() {
-   int sum = 0;
-   for (int i = 0; i < s.size(); i++) {
-   if (s.get(i).isAlive()) {
-   sum++;
-   }
-   }
-   return sum;
-   }
-   
-   private int getIndexForFirstAliveShark() {
-   for (int i = 0; i < s.size(); i++) {
-   if (s.get(i).isAlive()) {
-   return i;
-   }
-   }
-   return -1;
-   }
-   */
 }

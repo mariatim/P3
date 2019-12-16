@@ -2,20 +2,16 @@ class Plankton {
   PVector position;
   PVector velocity;
   PVector acceleration;
-  float nx, ny;
   float r;
   color c;
-  
+
   Plankton() {
     this.position = new PVector(random(width), random(height));
     this.velocity = new PVector();
     this.acceleration = new PVector();
-    nx = 0;
-    ny = 10000;
     r = random(1, 5);
     float dist = dist(this.position.x, this.position.y, width/2, height/2);
     int s = int(map(dist, 0, width/2, 0, 4));
-    //int s = int(random(4));
     switch (s) {
     case 0:
       c = color_plankton1;

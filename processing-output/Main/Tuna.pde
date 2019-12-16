@@ -97,14 +97,12 @@ class Tuna {
     float d1 = dist(this.position.x, this.position.y, island1.x, island1.y);
     float d2 = dist(this.position.x, this.position.y, island2.x, island2.y);
     if (d1 < perceptionRadius) {
-      //ellipse(island1.x, island1.y, perceptionRadius*2, perceptionRadius*2);
       PVector diff = PVector.sub(this.position, island1);
       diff.div(d1 * d1);
       steering.add(diff);
       total++;
     }
     if (d2 < perceptionRadius) {
-      //ellipse(island2.x, island2.y, perceptionRadius*2, perceptionRadius*2);
       PVector diff = PVector.sub(this.position, island2);
       diff.div(d2 * d2);
       steering.add(diff);
@@ -232,7 +230,6 @@ class Tuna {
     PVector alignment = this.align(boids);
     PVector cohesion = this.cohesion(boids);
     PVector separation = this.separation(boids);
-    //PVector avoidEdge = this.edges();
 
     alignment.mult(alignValue);
     cohesion.mult(cohesionValue);
@@ -268,12 +265,10 @@ class Tuna {
     fill(c, alpha);
     ellipse(this.position.x, this.position.y, 8, 8);
     beginShape();
-    //noFill();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
       float r = map(i, 0, history.size(), 1, 7);
       ellipse(pos.x, pos.y, r, r);
-      //vertex(pos.x, pos.y);
     }
     endShape();
   }
@@ -282,7 +277,6 @@ class Tuna {
     if (!this.caught) {
       for (Boat b : boats) {
         if (b.active == true && dist(this.position.x, this.position.y, b.currentPosition.x, b.currentPosition.y) <= b.radius) {
-          //ellipse(b.currentPosition.x-20, b.currentPosition.y, b.radius*2, b.radius*2);
           this.kill();
           this.caught = true;
         }
@@ -290,22 +284,22 @@ class Tuna {
     }
   }
 
-  public boolean isAlive() {
+  boolean isAlive() {
     return isAlive;
   }
 
-  public void kill() {
+  void kill() {
     isAlive = false;
     frameCountWhenKilled = frameCount;
   }
 
-  private void ressurect() {
+  void ressurect() {
     isAlive = true;
     alpha = 0;
     this.position = new PVector(random(width), random(height));
   }
 
-  public void tryToRessurect() {
+  void tryToRessurect() {
     if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
       this.caught = false;
       this.ressurect();

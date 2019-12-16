@@ -19,7 +19,10 @@ class Boat {
   PVector goal;
 
   Boat() {
-    this.reset();
+    startingPosition = new PVector(width/2, height-20);
+    goal = new PVector(random(width/6, 5*width/6), random(height/5, 4*height/5));
+    currentPosition = startingPosition.copy();
+    alpha = 255;
     acceleration = new PVector(0, 0);
     velocity = new PVector(0, 0);
     radius = 35;
@@ -27,13 +30,6 @@ class Boat {
     c = color_pollution;
     maxSpeed = 5;
     maxForce = 0.1;
-  }
-
-  void reset() {
-    startingPosition = new PVector(width/2, height-20);
-    goal = new PVector(random(width/6, 5*width/6), random(height/5, 4*height/5));
-    currentPosition = startingPosition.copy();
-    alpha = 255;
   }
 
   void show() {
@@ -48,7 +44,6 @@ class Boat {
     arc(-20, 30, 30, -10, PI, TWO_PI, OPEN);
     ellipse(-20, 10, 8, 8);
     ellipse(-20, -10, 4, 4);
-    //ellipse(-20, 0, radius*2, radius*2);
     popMatrix();
   }
 

@@ -40,15 +40,13 @@ void draw() {
     println(input);
   }
   e.display();
-  //println(frameRate);
-  
-  /*if (inputInt.length > 0) {
+
+  if (inputInt.length > 0) {
    e.changeTemperature(inputInt[0]);   
    e.changePollution(inputInt[1]);   
    e.changeFishingRate(inputInt[2]);
-  }*/
+   }
 }
-
 
 // keyboard interface for debuging
 

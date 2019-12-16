@@ -244,20 +244,17 @@ class Shark {
   void show() {
     noStroke();
     if (isAlive) {
-      if (/*frameCount%1 == 0 && */ this.alpha < 255) {
+      if (this.alpha < 255) {
         alpha++;
       }
     }
     fill(c, alpha);
     ellipse(this.position.x, this.position.y, 20, 20);
     beginShape();
-    //noFill();
     for (int i = 0; i < this.history.size(); i++) {
       PVector pos = this.history.get(i);
       float r = map(i, 0, history.size(), 5, 18);
-      //fill(255,255,102);
       ellipse(pos.x, pos.y, r, r);
-      //vertex(pos.x, pos.y);
     }
     endShape();
   }
@@ -266,7 +263,6 @@ class Shark {
     if (!this.caught) {
       for (Boat b : boats) {
         if (b.active == true && dist(this.position.x, this.position.y, b.currentPosition.x, b.currentPosition.y) <= b.radius) {
-          //ellipse(b.currentPosition.x-20, b.currentPosition.y, b.radius*2, b.radius*2);
           this.kill();
           this.caught = true;
         }
@@ -274,22 +270,22 @@ class Shark {
     }
   }
 
-  public boolean isAlive() {
+  boolean isAlive() {
     return isAlive;
   }
 
-  public void kill() {
+  void kill() {
     isAlive = false;
     frameCountWhenKilled = frameCount;
   }
 
-  private void ressurect() {
+  void ressurect() {
     isAlive = true;
     alpha = 0;
     this.position = new PVector(random(width), random(height));
   }
 
-  public void tryToRessurect() {
+  void tryToRessurect() {
     if ((frameCount - frameCountWhenKilled) >= FRAMES_NEEDED_TO_RESSURECT) {
       this.caught = false;
       this.ressurect();
