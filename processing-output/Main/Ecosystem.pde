@@ -281,14 +281,14 @@ class Ecosystem {
    Methods for the fishing of shark:
    **/
 
-  public void changeFishingRate(int newFishingRate) {
+  void changeFishingRate(int newFishingRate) {
     if ((newFishingRate >= MIN_DIE_VALUE) && (newFishingRate <= MAX_DIE_VALUE) && (newFishingRate != fishingLevel)) {
       fishingLevel = newFishingRate;
-      fishShark();
+      fish();
     }
   }
 
-  private void fishShark() {
+  void fish() {
     switch(fishingLevel) {
     case 0:
       for (Boat b : boats) {
