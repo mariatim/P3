@@ -57,11 +57,11 @@ class Whale {
     }
   }
 
-  void avoidPollution(ArrayList<Plastic> pl) {
+  void avoidPollution(ArrayList<Pollution> pl) {
     int perceptionRadius = 50;
     PVector steering = new PVector();
     int total = 0;
-    for (Plastic other : pl) {
+    for (Pollution other : pl) {
       if (other.isAlive) {
         float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
         if (d < perceptionRadius) {

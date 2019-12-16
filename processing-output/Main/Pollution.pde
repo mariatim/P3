@@ -1,4 +1,4 @@
-class Plastic {
+class Pollution {
   PVector position;
   PVector velocity;
   PVector acceleration;
@@ -8,7 +8,7 @@ class Plastic {
   
   color c;
 
-  Plastic(PVector pos) {
+  Pollution(PVector pos) {
     position = pos;
     this.velocity = new PVector();
     this.acceleration = new PVector();
@@ -16,7 +16,7 @@ class Plastic {
     alpha = 0;
     isAlive = false;
     
-    c = color_plastic;
+    c = color_pollution;
   }
 
   void show() {
@@ -45,8 +45,8 @@ class Plastic {
    }
    */
   /*
-  void stick(ArrayList<Plastic> pl) {
-   for (Plastic other : pl) {
+  void stick(ArrayList<Pollution> pl) {
+   for (Pollution other : pl) {
    float d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
    if (other != this && d < (other.r1+other.r2)/2) {
    this.velocity = new PVector(0, 0);

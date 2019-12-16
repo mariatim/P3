@@ -8,7 +8,7 @@ from statistics import mean
 # Load the image and process it for the CV to have it easier to analyse
 # add "vid.mp4" to use test video
 #Add 0 for using the videofeed.
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 
 dice = []
 values = [0, 0, 0]
@@ -34,7 +34,7 @@ blue = {"lower_threshold" : [hc(207), svc(37), svc(11)],
         "dot_erode" : (3, 3),
         "dice_epsilon" : 25,
         "color" : "blue",
-        "value" : 1}
+        "value" : 0}
 red = {"lower_threshold": [hc(0), svc(39), svc(49)],
         "upper_threshold": [hc(29), svc(100), svc(89)],
         "bilateral": (5, 40, 45),
@@ -44,7 +44,7 @@ red = {"lower_threshold": [hc(0), svc(39), svc(49)],
         "dot_erode": (2, 2),
         "dice_epsilon": 25,
         "color" : "red",
-        "value" : 1}
+        "value" : 0}
 green = {"lower_threshold" : [hc(105), svc(20), svc(8)],
         "upper_threshold" : [hc(185), svc(75), svc(60)],
         "bilateral" : (5, 40, 45),
@@ -54,7 +54,7 @@ green = {"lower_threshold" : [hc(105), svc(20), svc(8)],
         "dot_erode" : (2, 2),
         "dice_epsilon" : 25,
         "color" : "green",
-        "value" : 1}
+        "value" : 0}
 
 hues = [blue, red, green]
 

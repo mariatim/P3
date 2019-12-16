@@ -17,7 +17,6 @@ String[] inputSplit;
 Ecosystem e;
 
 void setup() {
-  //size(1360, 768);
   fullScreen(P2D, 2);
   frameRate(24);
   applyColorScheme7();
@@ -43,11 +42,11 @@ void draw() {
   e.display();
   //println(frameRate);
   
-  if (inputInt.length > 0) {
+  /*if (inputInt.length > 0) {
    e.changeTemperature(inputInt[0]);   
    e.changePollution(inputInt[1]);   
    e.changeFishingRate(inputInt[2]);
-  }
+  }*/
 }
 
 
